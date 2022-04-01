@@ -24,25 +24,29 @@ HEAD  := $(patsubst %.h,$(BUILD)/inc/%.h, $(shell find ./src -name "*.h" ! -name
 
 CPU_COUNT=$(shell grep -c "^processor" /proc/cpuinfo)
 
-# Use all avaliable processors to build the project
-.PHONY: all multi
-multi:
-	$(MAKE) -j$(CPU_COUNT) all
-
-.PHONY: dev
-dev: clean multi run
-
-all: $(BUILD)/$(TARGET)
-
 ##########################################
 ## Rules
 
+all-dbg: $(BUILD)/$(TARGET)-dbg
+all-rel: $(BUILD)/$(TARGET)-rel
+
+rel:
+	$(MAKE) -j$(CPU_COUNT) all-rel
+dbg:
+	$(MAKE) clean; $(MAKE) -j$(CPU_COUNT) all-dbg; $(MAKE) run
+
+# library
 lib: $(OBJS) $(HEAD)
 	ar rcs $(BUILD)/lib$(TARGET).a $(filter-out build/./src/main.c.o, $(OBJS))
 
-# excecutiable
-$(BUILD)/$(TARGET): $(OBJS)
-	$(CC) $(OBJS) -o $@ $(INCS) $(LIBS) $(LDFLAGS) $(CFLAGS) -fsanitize=address
+# debug excecutiable
+$(BUILD)/$(TARGET)-dbg: $(OBJS)
+	$(CC) $(OBJS) -o $(BUILD)/$(TARGET) $(INCS) $(LIBS) $(LDFLAGS) $(CFLAGS) -fsanitize=address
+
+# release excecutiable
+$(BUILD)/$(TARGET)-rel: $(OBJS)
+	$(CC) $(OBJS) -o $(BUILD)/$(TARGET) $(INCS) $(LIBS) $(LDFLAGS) $(CFLAGS) -fsanitize=address
+	strip $(BUILD)/$(TARGET)
 
 # c++ source
 $(BUILD)/%.cpp.o: %.cpp

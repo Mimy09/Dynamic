@@ -4,7 +4,7 @@
 make clean; make; make lib
 
 # Copy over the lib
-cp ../build/libdynamic.a /usr/local/lib/
+cp ./build/libdynamic.a /usr/local/lib/
 
 # Make the dynamic folder if it doen't exist
 # If it does exist, remove its current content
@@ -15,7 +15,7 @@ else
 fi
 
 # Copy over the includes
-cp -r ../build/inc/src/* /usr/local/include/dynamic/
+cp -r ./build/inc/src/* /usr/local/include/dynamic/
 
 # Clean up the write protected build files
 make clean

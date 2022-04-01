@@ -6,6 +6,8 @@
 void DMemory_begin(bool in_logging);
 void DMemory_end();
 
+// Turns logging on or off
+void  DMemory_logging(bool in_logging);
 // Allocate SIZE bytes in memory
 void* DMalloc   (uint32_t in_size);
 // Allocate NMEMB elements of SIZE bytes each, all initialized to 0

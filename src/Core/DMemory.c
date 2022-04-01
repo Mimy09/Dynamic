@@ -49,6 +49,10 @@ void DMemory_end() {
 	DYNAMIC_UNSAFE_END
 }
 
+void DMemory_logging(bool in_logging) {
+	g_DMemory_logging = in_logging;
+}
+
 void DMemory_add(void* in_ptr) {
     if (g_DMemory == NULL) return;
 	uint64_t ptr = (uint64_t)in_ptr;
