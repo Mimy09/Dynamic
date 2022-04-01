@@ -2,15 +2,15 @@
 #include "../Core/DMemory.h"
 #include <stdlib.h>
 
-//{SCAR}DBits__Tn_* DBits_create__Tn_() { DBits__Tn_* b = DMalloc(sizeof(DBits__Tn_)); return b; }
+//{SCAR}DBits__Tn_* DBits_create__Tn_() { DBits__Tn_* b = DMalloc(sizeof(DBits__Tn_)); b->_bits = 0; return b; }
 //{DESC}:4:_Tp_: uint8_t; uint16_t; uint32_t; uint64_t;
 //{DESC}:4:_Tn_: 8; 16; 32; 64;
 //{SCAR}
 //---{{{
-DBits_8* DBits_create_8() { DBits_8* b = DMalloc(sizeof(DBits_8)); return b; }
-DBits_16* DBits_create_16() { DBits_16* b = DMalloc(sizeof(DBits_16)); return b; }
-DBits_32* DBits_create_32() { DBits_32* b = DMalloc(sizeof(DBits_32)); return b; }
-DBits_64* DBits_create_64() { DBits_64* b = DMalloc(sizeof(DBits_64)); return b; }
+DBits_8* DBits_create_8() { DBits_8* b = DMalloc(sizeof(DBits_8)); b->_bits = 0; return b; }
+DBits_16* DBits_create_16() { DBits_16* b = DMalloc(sizeof(DBits_16)); b->_bits = 0; return b; }
+DBits_32* DBits_create_32() { DBits_32* b = DMalloc(sizeof(DBits_32)); b->_bits = 0; return b; }
+DBits_64* DBits_create_64() { DBits_64* b = DMalloc(sizeof(DBits_64)); b->_bits = 0; return b; }
 //---}}}
 
 //{SCAR}void DBits_free__Tn_(DBits__Tn_* in_bits) { if (in_bits != NULL) DFree(in_bits); }

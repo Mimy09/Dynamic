@@ -2,6 +2,7 @@
 
 // Container
 #include "Container/DArray.h"
+#include "Container/DBits.h"
 #include "Container/DMap.h"
 #include "Container/DStr.h"
 

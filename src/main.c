@@ -143,14 +143,12 @@ void thread_function(DThread* in_thread) {
 }
 void UT_Thread() {
 	// DThread
-	// {{{
 	char* _thread_args = "Hello World";
 	DThread* thread = DThread_create(thread_function, &_thread_args);
 	{
 		DThread_join(thread);
 	}
 	DThread_free(thread);
-	// }}}
 }
 // }}}
 // DStr
@@ -183,13 +181,32 @@ void UT_DStr() {
 	DStr_free(str);
 }
 // }}}
+// DBits
+// {{{
+void UT_DBits() {
+	DBits_8* bit = DBits_create_8();
 
+	for (int i = 0; i < 8; i ++) printf("%d", DBits_get_8(bit, i)); printf("\n");
+
+	DBits_set_8(bit, 0, true);
+	DBits_set_8(bit, 7, true);
+	DBits_flip_8(bit, 3);
+	DBits_flip_8(bit, 3);
+
+	for (int i = 0; i < 8; i ++) printf("%d", DBits_get_8(bit, i)); printf("\n");
+
+	DBits_free_8(bit);
+}
+// }}}
 int main() {
 	DPrint_set_level(DPRINT_ALL_FLAG);
 	DMemory_begin(true);
 
+	UT_DArray();
+	UT_Network();
+	UT_Thread();
 	UT_DStr();
-
+	UT_DBits();
 
 	DMemory_end();
 	return 0;
