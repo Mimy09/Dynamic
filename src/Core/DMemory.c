@@ -2,6 +2,7 @@
 #include "DLog.h"
 #include <string.h>
 #include <stdio.h>
+#include <errno.h>
 
 DArray* g_DMemory           = NULL;
 DArray* g_DMemory_trace     = NULL;
@@ -79,7 +80,7 @@ void* DMalloc (uint32_t in_size) {
     DYNAMIC_UNSAFE_START
 
     void* ptr = malloc(in_size);
-    DYNAMIC_MEMORY_LOG("malloc ", ptr, in_size, COL_GREEN);
+    DYNAMIC_MEMORY_LOG("malloc    ", ptr, in_size, COL_GREEN);
     DMemory_add(ptr);
 
     DYNAMIC_UNSAFE_END
@@ -90,7 +91,11 @@ void* DCalloc (uint32_t in_nmemb, uint32_t in_size) {
     DYNAMIC_UNSAFE_START
 
     void* ptr = calloc(in_nmemb, in_size);
-    DYNAMIC_MEMORY_LOG("calloc ", ptr, in_size, COL_GREEN);
+	if (errno == ENOMEM) {
+		DPrint_err("DCalloc: Alloc size overflowed");
+		return NULL;
+	}
+    DYNAMIC_MEMORY_LOG("calloc    ", ptr, in_size, COL_GREEN);
     DMemory_add(ptr);
 
     DYNAMIC_UNSAFE_END
@@ -102,7 +107,23 @@ void* DRealloc (void* in_ptr, uint32_t in_size) {
 
     DMemory_free(in_ptr);
     void* ptr = realloc(in_ptr, in_size);
-    DYNAMIC_MEMORY_LOG("realloc", ptr, in_size, COL_MAGENTA);
+    DYNAMIC_MEMORY_LOG("realloc   ", ptr, in_size, COL_MAGENTA);
+    DMemory_add(ptr);
+
+    DYNAMIC_UNSAFE_END
+    return ptr;
+}
+void* DReallocArr (void* in_ptr, uint32_t in_nmemb, uint32_t in_size) {
+    DYNAMIC_UNSAFE { return reallocarray(in_ptr, in_nmemb, in_size); }
+    DYNAMIC_UNSAFE_START
+
+    DMemory_free(in_ptr);
+	if (errno == ENOMEM) {
+		DPrint_err("DCalloc: reallocarr size overflowed");
+		return NULL;
+	}
+    void* ptr = reallocarray(in_ptr, in_nmemb, in_size);
+    DYNAMIC_MEMORY_LOG("reallocarr", ptr, in_size, COL_MAGENTA);
     DMemory_add(ptr);
 
     DYNAMIC_UNSAFE_END
@@ -113,7 +134,7 @@ void DFree (void* in_ptr) {
     DYNAMIC_UNSAFE_START
 
     DMemory_free(in_ptr);
-    DYNAMIC_MEMORY_LOG("free   ", in_ptr, 0, COL_RED);
+    DYNAMIC_MEMORY_LOG("free      ", in_ptr, 0, COL_RED);
     free(in_ptr);
 
     DYNAMIC_UNSAFE_END

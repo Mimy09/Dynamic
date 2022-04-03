@@ -198,15 +198,16 @@ void UT_DBits() {
 	DBits_free_8(bit);
 }
 // }}}
+
 int main() {
 	DPrint_set_level(DPRINT_ALL_FLAG);
 	DMemory_begin(true);
 
-	UT_DArray();
-	UT_Network();
-	UT_Thread();
-	UT_DStr();
-	UT_DBits();
+	//UT_DArray();
+	//UT_Network();
+	//UT_Thread();
+	//UT_DStr();
+	//UT_DBits();
 
 	DMemory_end();
 	return 0;
