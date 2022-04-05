@@ -30,6 +30,7 @@ DMap* DMap_create(uint32_t in_size) {
 	for (struct DMap_Node* p = data; p < ((struct DMap_Node*)data) + (in_size ); p++) {
 		p->_used = false;
 		p->_data = DArray_create(sizeof(struct DMap_Node_Element));
+		DArray_buffer(p->_data, 4);
 	}
 
 	return map;
@@ -93,4 +94,10 @@ void* DMap_index(DMap* in_map, uint32_t in_index, uint32_t in_element) {
 	struct DMap_Node* n = DArray_get(in_map->_data, in_index);
 	if (!n->_used || in_element >= DArray_size(n->_data)) return NULL;
 	return ((struct DMap_Node_Element*)DArray_get(n->_data, in_element))->_value;
+}
+
+const char* DMap_index_key(DMap* in_map, uint32_t in_index, uint32_t in_element) {
+	struct DMap_Node* n = DArray_get(in_map->_data, in_index);
+	if (!n->_used || in_element >= DArray_size(n->_data)) return "";
+	return ((struct DMap_Node_Element*)DArray_get(n->_data, in_element))->_key;
 }

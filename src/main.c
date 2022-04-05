@@ -219,16 +219,33 @@ int main() {
 	struct MapData p1 = {10, 10};
 	struct MapData p2 = {20, 12};
 	struct MapData p3 = {30, 13};
+	struct MapData p4 = {30, 16};
+	struct MapData p5 = {30, 18};
 	DMap_set(map, "Liz", (void*)&p1);
 	DMap_set(map, "John", (void*)&p2);
 	DMap_set(map, "Bob", (void*)&p3);
+	DMap_set(map, "B31", (void*)&p4);
+	DMap_set(map, "Bob3", (void*)&p5);
+
+	DPrint_inf("age:%d state:%d",
+			((struct MapData*)DMap_get(map, "B31"))->_age,
+			((struct MapData*)DMap_get(map, "B31"))->_state);
 
 	for (int i = 0; i < 10; i++) {
 		struct MapData* d = DMap_index(map, i, 0);
-		if (d == NULL)
-			DPrint("----\n");
-		else
-			DPrint("age:%d state:%d\n", d->_age, d->_state);
+		const char* dn = DMap_index_key(map, i, 0);
+
+		if (d == NULL) DPrint("----\n");
+		else DPrint("[%d:%d]%s \tage:%d state:%d\n", i, 0, dn, d->_age, d->_state);
+
+		for (int j = 1; j < 10; j++) {
+			d = DMap_index(map, i, j);
+			dn = DMap_index_key(map, i, j);
+			if (d == NULL) break;
+			else DPrint("[%d:%d]%s \tage:%d state:%d\n", i, j, dn, d->_age, d->_state);
+		}
+
+		DPrint("\n");
 	}
 	
 

@@ -24,3 +24,6 @@ bool DMap_remove(DMap* in_map, const char* in_key);
 
 // Get by the index in the map
 void* DMap_index(DMap* in_map, uint32_t in_index, uint32_t in_element);
+
+// Get by the key at index in the map
+const char* DMap_index_key(DMap* in_map, uint32_t in_index, uint32_t in_element);
