@@ -42,7 +42,6 @@ uint32_t DArray_stride(DArray* in_arr);
 // Size of the buffer
 uint32_t DArray_size_buffer(DArray* in_arr);
 
-
 // -- Pushback -- //
 
 // Adds a new value to the end of the array

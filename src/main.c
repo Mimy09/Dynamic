@@ -199,6 +199,11 @@ void UT_DBits() {
 }
 // }}}
 
+struct MapData {
+	uint32_t _age;
+	uint32_t _state;
+};
+
 int main() {
 	DPrint_set_level(DPRINT_ALL_FLAG);
 	DMemory_begin(true);
@@ -208,6 +213,26 @@ int main() {
 	//UT_Thread();
 	//UT_DStr();
 	//UT_DBits();
+
+	DMap* map = DMap_create(10);
+
+	struct MapData p1 = {10, 10};
+	struct MapData p2 = {20, 12};
+	struct MapData p3 = {30, 13};
+	DMap_set(map, "Liz", (void*)&p1);
+	DMap_set(map, "John", (void*)&p2);
+	DMap_set(map, "Bob", (void*)&p3);
+
+	for (int i = 0; i < 10; i++) {
+		struct MapData* d = DMap_index(map, i, 0);
+		if (d == NULL)
+			DPrint("----\n");
+		else
+			DPrint("age:%d state:%d\n", d->_age, d->_state);
+	}
+	
+
+	DMap_free(map);
 
 	DMemory_end();
 	return 0;

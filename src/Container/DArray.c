@@ -47,6 +47,12 @@ void DArray_buffer(DArray* in_arr, uint32_t in_buffer) {
 	in_arr->_buffer = in_buffer * in_arr->_stride;
 }
 
+void DArray_allocate(DArray* in_arr, void* in_data, uint32_t in_size) {
+	in_arr->_start  = in_data;
+	in_arr->_back   = in_data + (in_size * in_arr->_stride);
+	in_arr->_end    = in_arr->_back;
+}
+
 void DArray_popback(DArray* in_arr) {
 	if (in_arr->_back - in_arr->_start > 0) {
 		in_arr->_back -= in_arr->_stride;
@@ -57,6 +63,8 @@ void DArray_clear(DArray* in_arr) {
 	if (in_arr->_start != NULL) {
 		DFree(in_arr->_start);
 		in_arr->_start = NULL;
+		in_arr->_back  = NULL;
+		in_arr->_end   = NULL;
 	}
 }
 
