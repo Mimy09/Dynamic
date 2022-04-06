@@ -12,5 +12,6 @@ struct DMap_Node {
 };
 
 struct DMap {
-	DArray* _data;
+	DArray*  _data;
+	uint32_t _stride;
 };
