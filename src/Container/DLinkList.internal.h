@@ -8,6 +8,8 @@ struct DLinkList_Node {
 };
 
 struct DLinkList {
+	uint32_t        _size;
+	uint32_t        _stride;
 	DLinkList_Node* _head;
 	DLinkList_Node* _tail;
 };

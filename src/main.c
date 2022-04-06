@@ -213,32 +213,29 @@ int main() {
 	//UT_Thread();
 	//UT_DStr();
 	//UT_DBits();
-
-	DMap* map = DMap_create(10, sizeof(uint32_t));
-
-	{
-		DMap_set_u32(map, "Test0", 5);
-		DMap_set_u32(map, "Test1", 5);
-		//DMap_set_u32(map, "Test2", 5);
-		//DMap_set_u32(map, "Test3", 5);
-		//DMap_set_u32(map, "Test4", 5);
-	}
-
-
-	for (int i = 0; i < 10; i++) {
-		uint32_t* d = DMap_index(map, i, 0);
-		if (d != NULL) { DPrint_inf("[%d] %u", i, *d); }
-		else { DPrint_inf("[%d] ---", i); }
-
-		for (uint32_t j = 1; (d = DMap_index(map, i, j)) != NULL; j++) {
-			DPrint_inf("[%d] %u", i, *d);
-		}
-
-		DPrint("\n");
-	}
 	
+	DLinkList* ll = DLinkList_create(sizeof(uint32_t));
 
-	DMap_free(map);
+	uint32_t t1 = 5;
+	uint32_t t2 = 4;
+	uint32_t t3 = 3;
+	uint32_t t4 = 9;
+	uint32_t t5 = 0;
+
+	DLinkList_insert_back(ll, &t1);
+	DLinkList_insert_back(ll, &t2);
+	DLinkList_insert_back(ll, &t3);
+	DLinkList_insert_at(ll, &t4, 1);
+	DLinkList_insert_front(ll, &t5);
+
+	DLinkList_remove_at(ll, 0);
+	DLinkList_remove_back(ll);
+
+	for (DLinkList_Node* n = DLinkList_head(ll); n != NULL; n = DLinkList_Node_next(n)) {
+		DPrint_inf("%d", *(uint32_t*)DLinkList_Node_value(n));
+	}
+
+	DLinkList_free(ll);
 
 	DMemory_end();
 	return 0;

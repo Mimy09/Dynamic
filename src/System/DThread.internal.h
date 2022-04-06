@@ -7,7 +7,7 @@
 struct DThread {
 	pthread_t      _thread;
 	volatile bool  _running;
-	volatile void* _args;
-	volatile void* _retn;
+	void* _args;
+	void* _retn;
 	void(*_func)(DThread*);
 };
