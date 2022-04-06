@@ -26,8 +26,8 @@ void DMemory_begin(bool in_logging) {
     DYNAMIC_UNSAFE_START
     g_DMemory  		= DArray_create(sizeof(uint64_t));
     g_DMemory_trace = DArray_create(sizeof(DStr*));
-	//DArray_buffer(g_DMemory, 10);
-	//DArray_buffer(g_DMemory_trace, 10);
+	DArray_buffer(g_DMemory, 10);
+	DArray_buffer(g_DMemory_trace, 10);
     g_DMemory_logging = in_logging;
 	DYNAMIC_UNSAFE_END
 }
