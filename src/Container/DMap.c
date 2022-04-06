@@ -30,8 +30,7 @@ DMap* DMap_create(uint32_t in_size, uint32_t in_stride) {
 
 	for (struct DMap_Node* p = data; p < ((struct DMap_Node*)data) + (in_size ); p++) {
 		p->_used = false;
-		p->_data = DArray_create(sizeof(struct DMap_Node_Element));
-		DArray_buffer(p->_data, 4);
+		p->_data = NULL;
 	}
 
 	return map;
@@ -41,6 +40,7 @@ void DMap_free(DMap* in_map) {
 	if (in_map != NULL) {
 		for (uint32_t i = 0; i < DArray_size(in_map->_data); i++) {
 			struct DMap_Node* n = DArray_get(in_map->_data, i);
+			if (n->_data == NULL) continue;
 			for (uint32_t j = 0; j < DArray_size(n->_data); j++) {
 				struct DMap_Node_Element* e = DArray_get(n->_data, j);
 				DFree(e->_value);
@@ -60,6 +60,10 @@ void DMap_set(DMap* in_map, const char* in_key, void* in_value) {
 	memcpy(p, in_value, in_map->_stride);
 	struct DMap_Node_Element e = { in_key, p };
 	struct DMap_Node* n = DArray_get(in_map->_data, h);
+	if (n->_data == NULL) {
+		n->_data = DArray_create(sizeof(struct DMap_Node_Element));
+		DArray_buffer(n->_data, 2);
+	}
 	DArray_pushback(n->_data, &e);
 	n->_used = true;
 }
@@ -67,7 +71,7 @@ void DMap_set(DMap* in_map, const char* in_key, void* in_value) {
 void* DMap_get(DMap* in_map, const char* in_key) {
 	uint32_t h = DMap_hashing(in_key, DArray_size(in_map->_data));
 	struct DMap_Node* n = DArray_get(in_map->_data, h);
-	if (!n->_used) return NULL;
+	if (!n->_used || n->_data == NULL) return NULL;
 
 	for (uint32_t i = 0; i < DArray_size(n->_data); i++) {
 		struct DMap_Node_Element* e = DArray_get(n->_data, i);
@@ -82,7 +86,7 @@ void* DMap_get(DMap* in_map, const char* in_key) {
 bool DMap_remove(DMap* in_map, const char* in_key) {
 	uint32_t h = DMap_hashing(in_key, DArray_size(in_map->_data));
 	struct DMap_Node* n = DArray_get(in_map->_data, h);
-	if (!n->_used) return false;
+	if (!n->_used || n->_data == NULL) return false;
 	for (uint32_t i = 0; i < DArray_size(n->_data); i++) {
 		struct DMap_Node_Element* e = DArray_get(n->_data, i);
 		if (strstr(in_key, e->_key) != 0) {
@@ -100,12 +104,14 @@ bool DMap_remove(DMap* in_map, const char* in_key) {
 
 void* DMap_index(DMap* in_map, uint32_t in_index, uint32_t in_element) {
 	struct DMap_Node* n = DArray_get(in_map->_data, in_index);
+	if (n->_data == NULL) return NULL;
 	if (!n->_used || in_element >= DArray_size(n->_data)) return NULL;
 	return ((struct DMap_Node_Element*)DArray_get(n->_data, in_element))->_value;
 }
 
 const char* DMap_index_key(DMap* in_map, uint32_t in_index, uint32_t in_element) {
 	struct DMap_Node* n = DArray_get(in_map->_data, in_index);
+	if (n->_data == NULL) return NULL;
 	if (!n->_used || in_element >= DArray_size(n->_data)) return "";
 	return ((struct DMap_Node_Element*)DArray_get(n->_data, in_element))->_key;
 }

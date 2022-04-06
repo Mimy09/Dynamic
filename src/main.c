@@ -219,9 +219,9 @@ int main() {
 	{
 		DMap_set_u32(map, "Test0", 5);
 		DMap_set_u32(map, "Test1", 5);
-		DMap_set_u32(map, "Test2", 5);
-		DMap_set_u32(map, "Test3", 5);
-		DMap_set_u32(map, "Test4", 5);
+		//DMap_set_u32(map, "Test2", 5);
+		//DMap_set_u32(map, "Test3", 5);
+		//DMap_set_u32(map, "Test4", 5);
 	}
 
 
