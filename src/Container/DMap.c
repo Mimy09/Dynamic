@@ -115,3 +115,7 @@ const char* DMap_index_key(DMap* in_map, uint32_t in_index, uint32_t in_element)
 	if (!n->_used || in_element >= DArray_size(n->_data)) return "";
 	return ((struct DMap_Node_Element*)DArray_get(n->_data, in_element))->_key;
 }
+
+uint32_t DMap_size(DMap* in_map) {
+	return DArray_size(in_map->_data);
+}

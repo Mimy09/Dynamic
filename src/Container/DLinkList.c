@@ -34,7 +34,6 @@ void DLinkList_remove_at(DLinkList* in_ll, uint32_t in_index) {
 }
 void DLinkList_remove_back(DLinkList* in_ll) {
 	DLinkList_Node* n = in_ll->_tail;
-
 	n->_prev->_next = NULL;
 	in_ll->_tail = n->_prev;
 	in_ll->_size--;

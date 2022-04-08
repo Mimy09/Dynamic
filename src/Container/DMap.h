@@ -22,6 +22,8 @@ void* DMap_index(DMap* in_map, uint32_t in_index, uint32_t in_element);
 // Get by the key at index in the map
 const char* DMap_index_key(DMap* in_map, uint32_t in_index, uint32_t in_element);
 
+// Return the size of the map
+uint32_t DMap_size(DMap* in_map);
 
 // Push back a new value to the map
 void DMap_set(DMap* in_map, const char* in_key, void* in_value);

@@ -1,8 +1,8 @@
 #pragma once
-#include <stdint.h>
 #include <stddef.h>
 #include <stdlib.h>
 #include <string.h>
+#include "../System/DTypes.h"
 
 typedef struct DArray DArray;
 

@@ -1,5 +1,5 @@
 #pragma once
-#include <stdint.h>
+#include "../System/DTypes.h"
 #include <stdlib.h>
 
 typedef struct DLinkList DLinkList;

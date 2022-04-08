@@ -199,10 +199,12 @@ void UT_DBits() {
 }
 // }}}
 
-struct MapData {
-	uint32_t _age;
-	uint32_t _state;
-};
+
+void* e_func1(void* in_arg) { DPrint_inf("Called 1"); return NULL; }
+void* e_func2(void* in_arg) { DPrint_inf("Called 2"); return NULL; }
+void* e_func3(void* in_arg) { DPrint_inf("Called 3"); return NULL; }
+void* e_func4(void* in_arg) { DPrint_inf("Called 4"); return NULL; }
+void* e_func5(void* in_arg) { DPrint_inf("Called 5"); return NULL; }
 
 int main() {
 	DPrint_set_level(DPRINT_ALL_FLAG);
@@ -214,28 +216,28 @@ int main() {
 	//UT_DStr();
 	//UT_DBits();
 	
-	DLinkList* ll = DLinkList_create(sizeof(uint32_t));
+	DPrint_dbg("DEvent_create");
+	DEvent* e = DEvent_create(9);
 
-	uint32_t t1 = 5;
-	uint32_t t2 = 4;
-	uint32_t t3 = 3;
-	uint32_t t4 = 9;
-	uint32_t t5 = 0;
-
-	DLinkList_insert_back(ll, &t1);
-	DLinkList_insert_back(ll, &t2);
-	DLinkList_insert_back(ll, &t3);
-	DLinkList_insert_at(ll, &t4, 1);
-	DLinkList_insert_front(ll, &t5);
-
-	DLinkList_remove_at(ll, 0);
-	DLinkList_remove_back(ll);
-
-	for (DLinkList_Node* n = DLinkList_head(ll); n != NULL; n = DLinkList_Node_next(n)) {
-		DPrint_inf("%d", *(uint32_t*)DLinkList_Node_value(n));
+	{
+		DPrint_dbg("DEvent_add");
+		DEvent_add(e, "test2", e_func1);
+		DPrint_dbg("DEvent_add");
+		DEvent_add(e, "test2", e_func2);
+		DPrint_dbg("DEvent_add");
+		DEvent_add(e, "test2", e_func3);
+		DPrint_dbg("DEvent_add");
+		DEvent_add(e, "test3", e_func4);
+		DPrint_dbg("DEvent_add");
+		DEvent_add(e, "test3", e_func5);
+	}
+	{
+		DPrint_dbg("DEvent_call");
+		DEvent_call(e, "test2");
 	}
 
-	DLinkList_free(ll);
+	DPrint_dbg("DEvent_free");
+	DEvent_free(e);
 
 	DMemory_end();
 	return 0;

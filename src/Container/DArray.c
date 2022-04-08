@@ -2,11 +2,6 @@
 #include "../Core/DMemory.h"
 #include "../Core/DLog.h"
 
-void internal_DArray_set_memory(DArray* in_arr, uint32_t in_size) {
-	in_arr->_back  = in_arr->_start + (in_size);
-	in_arr->_end   = in_arr->_start + (in_size + in_arr->_buffer);
-}
-
 DArray* DArray_create(uint32_t in_stride) {
 	DArray* arr = (DArray*)DMalloc(sizeof(DArray));
 	arr->_stride = in_stride;
@@ -118,7 +113,8 @@ void DArray_insert(DArray* in_arr, void* in_value, u_int32_t in_size, uint32_t i
 	DFree(in_arr->_start);
 
 	in_arr->_start = _new;
-	internal_DArray_set_memory(in_arr, _new_size);
+	in_arr->_back  = in_arr->_start + _new_size;
+	in_arr->_end   = in_arr->_back;
 }
 
 void DArray_put(DArray* in_arr, void* in_value, uint32_t in_index) {
