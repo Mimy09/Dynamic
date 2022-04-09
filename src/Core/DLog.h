@@ -2,7 +2,7 @@
 #define _DYNAMIC_LOGGING_H_
 #include "../Container/DArray.h"
 #include "../Container/DStr.h"
-#include <stdbool.h>
+#include "../System/DTypes.h"
 
 #define COL_RESET       "\033[0m"
 #define COL_BLACK       "\033[30m"             /* Black */

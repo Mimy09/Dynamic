@@ -1,7 +1,6 @@
 #ifndef _DYNAMIC_MEMORY_H_
 #define _DYNAMIC_MEMORY_H_
-#include <stdint.h>
-#include <stdbool.h>
+#include "../System/DTypes.h"
 
 void DMemory_begin(bool in_logging);
 void DMemory_end();

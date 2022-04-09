@@ -1,6 +1,6 @@
 #pragma once
 #include "DArray.h"
-#include <stdbool.h>
+#include "../System/DTypes.h"
 
 typedef struct DMap DMap;
 

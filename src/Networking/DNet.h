@@ -1,5 +1,4 @@
 #pragma once
-#include <stdint.h>
 #include "../System/DTypes.h"
 
 typedef struct DNet DNet;

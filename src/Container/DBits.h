@@ -1,6 +1,5 @@
 #pragma once
-#include <stdint.h>
-#include <stdbool.h>
+#include "../System/DTypes.h"
 
 //{SCAR}typedef struct DBits__Tn_ DBits__Tn_;
 //{DESC}:4:_Tn_: 8; 16; 32; 64;
