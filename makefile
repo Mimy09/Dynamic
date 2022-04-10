@@ -5,7 +5,6 @@ TARGET 	:= dynamic
 CC		:= gcc
 
 # Flags
-CFLAGS 	:= -g3 -rdynamic
 INCS	?= -I./src/
 LIBS	?= -lpthread -lm -lcurl
 MKF_DIR	:= $(abspath $(lastword $(MAKEFILE_LIST)))
@@ -26,12 +25,12 @@ CPU_COUNT=$(shell grep -c "^processor" /proc/cpuinfo)
 
 ##########################################
 ## Rules
-
+all-dbg: CFLAGS += -DDEBUG -g -fsanitize=address
 all-dbg: $(BUILD)/$(TARGET)-dbg
 all-rel: $(BUILD)/$(TARGET)-rel
 
 rel:
-	$(MAKE) -j$(CPU_COUNT) all-rel
+	$(MAKE) clean; $(MAKE) -j$(CPU_COUNT) all-rel; $(MAKE) run
 dbg:
 	$(MAKE) clean; $(MAKE) -j$(CPU_COUNT) all-dbg; $(MAKE) run
 
@@ -41,11 +40,11 @@ lib: $(OBJS) $(HEAD)
 
 # debug excecutiable
 $(BUILD)/$(TARGET)-dbg: $(OBJS)
-	$(CC) $(OBJS) -o $(BUILD)/$(TARGET) $(INCS) $(LIBS) $(LDFLAGS) $(CFLAGS) -fsanitize=address
+	$(CC) $(CFLAGS) $(OBJS) -o $(BUILD)/$(TARGET) $(INCS) $(LIBS) $(LDFLAGS)
 
 # release excecutiable
 $(BUILD)/$(TARGET)-rel: $(OBJS)
-	$(CC) $(OBJS) -o $(BUILD)/$(TARGET) $(INCS) $(LIBS) $(LDFLAGS) $(CFLAGS) -fsanitize=address
+	$(CC) $(CFLAGS) $(OBJS) -o $(BUILD)/$(TARGET) $(INCS) $(LIBS) $(LDFLAGS)
 	strip $(BUILD)/$(TARGET)
 
 # c++ source

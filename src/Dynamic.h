@@ -21,6 +21,7 @@ extern "C" {
 
 // System
 #include "System/DThread.h"
+#include "System/DConsole.h"
 
 #ifdef __cplusplus
 }

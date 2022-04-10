@@ -198,24 +198,14 @@ void UT_DBits() {
 	DBits_free_8(bit);
 }
 // }}}
-
-
+// DEvent
+// {{{
 void* e_func1(void* in_arg) { DPrint_inf("Called 1"); return NULL; }
 void* e_func2(void* in_arg) { DPrint_inf("Called 2"); return NULL; }
 void* e_func3(void* in_arg) { DPrint_inf("Called 3"); return NULL; }
 void* e_func4(void* in_arg) { DPrint_inf("Called 4"); return NULL; }
 void* e_func5(void* in_arg) { DPrint_inf("Called 5"); return NULL; }
-
-int main() {
-	DPrint_set_level(DPRINT_ALL_FLAG);
-	DMemory_begin(true);
-
-	//UT_DArray();
-	//UT_Network();
-	//UT_Thread();
-	//UT_DStr();
-	//UT_DBits();
-	
+void UT_DEvent() {
 	DPrint_dbg("DEvent_create");
 	DEvent* e = DEvent_create(9);
 
@@ -238,6 +228,30 @@ int main() {
 
 	DPrint_dbg("DEvent_free");
 	DEvent_free(e);
+}
+// }}}
+int main(int argc, char** argv) {
+	DPrint_set_level(DPRINT_ALL_FLAG);
+	DMemory_begin(true);
+
+	//UT_DArray();
+	//UT_Network();
+	//UT_Thread();
+	//UT_DStr();
+	//UT_DBits();
+	
+	DConsole* con = DConsole_create(argc, argv);
+	{
+		DConsole_Value cstr = DConsole_add_cstr(con, "--cstr");
+		DConsole_Value numb = DConsole_add_numb(con, "--numb");
+		DConsole_Value togg = DConsole_add_bool(con, "--bool");
+
+		if (cstr._used) DPrint_inf("--cstr %s", cstr._cstr);
+		if (numb._used) DPrint_inf("--numb %d", numb._numb);
+		if (togg._used) DPrint_inf("--bool %d", togg._bool);
+	}
+
+	DConsole_free(con);
 
 	DMemory_end();
 	return 0;

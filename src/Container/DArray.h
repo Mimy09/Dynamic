@@ -48,8 +48,8 @@ uint32_t DArray_size_buffer(DArray* in_arr);
 void DArray_pushback(DArray* in_arr, void* in_value);
 
 //{SCAR}static void DArray_pushback__Tn_(DArray* in_arr, _Tp_ in_value) { DArray_pushback(in_arr, &in_value); }
-//{DESC}:12:_Tp_: uint8_t; uint16_t; uint32_t; uint64_t; int8_t; int16_t; int32_t; int64_t;	float; double; char; char*;
-//{DESC}:12:_Tn_: u8; 	   u16; 	 u32; 	   u64; 	 i8; 	 i16; 	  i32; 	   i64; 	f32;   f64;    char; cstr;
+//{DESC}:13:_Tp_: uint8_t; uint16_t; uint32_t; uint64_t; int8_t; int16_t; int32_t; int64_t;	float; double; char; char*; bool;
+//{DESC}:13:_Tn_: u8; 	   u16; 	 u32; 	   u64; 	 i8; 	 i16; 	  i32; 	   i64; 	f32;   f64;    char; cstr;  bool;
 //{SCAR}
 //---{{{
 static void DArray_pushback_u8(DArray* in_arr, uint8_t in_value) { DArray_pushback(in_arr, &in_value); }
@@ -64,6 +64,7 @@ static void DArray_pushback_f32(DArray* in_arr, float in_value) { DArray_pushbac
 static void DArray_pushback_f64(DArray* in_arr, double in_value) { DArray_pushback(in_arr, &in_value); }
 static void DArray_pushback_char(DArray* in_arr, char in_value) { DArray_pushback(in_arr, &in_value); }
 static void DArray_pushback_cstr(DArray* in_arr, char* in_value) { DArray_pushback(in_arr, &in_value); }
+static void DArray_pushback_bool(DArray* in_arr, bool in_value) { DArray_pushback(in_arr, &in_value); }
 //---}}}
 
 // -- Append -- //
@@ -72,8 +73,8 @@ static void DArray_pushback_cstr(DArray* in_arr, char* in_value) { DArray_pushba
 void DArray_append(DArray* in_arr, void* in_value, uint32_t in_size);
 
 //{SCAR}static void DArray_append__Tn_(DArray* in_arr, _Tp_* in_value, uint32_t in_size) { DArray_append(in_arr, in_value, in_size); }
-//{DESC}:12:_Tp_: uint8_t; uint16_t; uint32_t; uint64_t; int8_t; int16_t; int32_t; int64_t;	float; double; char; char*;
-//{DESC}:12:_Tn_: u8; 	   u16; 	 u32; 	   u64; 	 i8; 	 i16; 	  i32; 	   i64; 	f32;   f64;    char; cstr;
+//{DESC}:13:_Tp_: uint8_t; uint16_t; uint32_t; uint64_t; int8_t; int16_t; int32_t; int64_t;	float; double; char; char*; bool;
+//{DESC}:13:_Tn_: u8; 	   u16; 	 u32; 	   u64; 	 i8; 	 i16; 	  i32; 	   i64; 	f32;   f64;    char; cstr;  bool;
 //{SCAR}
 //---{{{
 static void DArray_append_u8(DArray* in_arr, uint8_t* in_value, uint32_t in_size) { DArray_append(in_arr, in_value, in_size); }
@@ -88,6 +89,7 @@ static void DArray_append_f32(DArray* in_arr, float* in_value, uint32_t in_size)
 static void DArray_append_f64(DArray* in_arr, double* in_value, uint32_t in_size) { DArray_append(in_arr, in_value, in_size); }
 static void DArray_append_char(DArray* in_arr, char* in_value, uint32_t in_size) { DArray_append(in_arr, in_value, in_size); }
 static void DArray_append_cstr(DArray* in_arr, char** in_value, uint32_t in_size) { DArray_append(in_arr, in_value, in_size); }
+static void DArray_append_bool(DArray* in_arr, bool* in_value, uint32_t in_size) { DArray_append(in_arr, in_value, in_size); }
 //---}}}
 
 
@@ -96,8 +98,8 @@ static void DArray_append_cstr(DArray* in_arr, char** in_value, uint32_t in_size
 void DArray_insert(DArray* in_arr, void* in_value, u_int32_t in_size, uint32_t in_index);
 
 //{SCAR}static void DArray_insert__Tn_(DArray* in_arr, _Tp_* in_value, uint32_t in_size, uint32_t in_index) { DArray_insert(in_arr, in_value, in_size, in_index); }
-//{DESC}:12:_Tp_: uint8_t; uint16_t; uint32_t; uint64_t; int8_t; int16_t; int32_t; int64_t;	float; double; char; char*;
-//{DESC}:12:_Tn_: u8; 	   u16; 	 u32; 	   u64; 	 i8; 	 i16; 	  i32; 	   i64; 	f32;   f64;    char; cstr;
+//{DESC}:13:_Tp_: uint8_t; uint16_t; uint32_t; uint64_t; int8_t; int16_t; int32_t; int64_t;	float; double; char; char*; bool;
+//{DESC}:13:_Tn_: u8; 	   u16; 	 u32; 	   u64; 	 i8; 	 i16; 	  i32; 	   i64; 	f32;   f64;    char; cstr;  bool;
 //{SCAR}
 //---{{{
 static void DArray_insert_u8(DArray* in_arr, uint8_t* in_value, uint32_t in_size, uint32_t in_index) { DArray_insert(in_arr, in_value, in_size, in_index); }
@@ -112,6 +114,7 @@ static void DArray_insert_f32(DArray* in_arr, float* in_value, uint32_t in_size,
 static void DArray_insert_f64(DArray* in_arr, double* in_value, uint32_t in_size, uint32_t in_index) { DArray_insert(in_arr, in_value, in_size, in_index); }
 static void DArray_insert_char(DArray* in_arr, char* in_value, uint32_t in_size, uint32_t in_index) { DArray_insert(in_arr, in_value, in_size, in_index); }
 static void DArray_insert_cstr(DArray* in_arr, char** in_value, uint32_t in_size, uint32_t in_index) { DArray_insert(in_arr, in_value, in_size, in_index); }
+static void DArray_insert_bool(DArray* in_arr, bool* in_value, uint32_t in_size, uint32_t in_index) { DArray_insert(in_arr, in_value, in_size, in_index); }
 //---}}}
 
 // -- Put -- //
@@ -120,8 +123,8 @@ static void DArray_insert_cstr(DArray* in_arr, char** in_value, uint32_t in_size
 void DArray_put(DArray* in_arr, void* in_value, uint32_t in_index);
 
 //{SCAR}static void DArray_put__Tn_(DArray* in_arr, _Tp_ in_value, uint32_t in_index) { DArray_put(in_arr, &in_value, in_index); }
-//{DESC}:12:_Tp_: uint8_t; uint16_t; uint32_t; uint64_t; int8_t; int16_t; int32_t; int64_t;	float; double; char; char*;
-//{DESC}:12:_Tn_: u8; 	   u16; 	 u32; 	   u64; 	 i8; 	 i16; 	  i32; 	   i64; 	f32;   f64;    char; cstr;
+//{DESC}:13:_Tp_: uint8_t; uint16_t; uint32_t; uint64_t; int8_t; int16_t; int32_t; int64_t;	float; double; char; char*; bool;
+//{DESC}:13:_Tn_: u8; 	   u16; 	 u32; 	   u64; 	 i8; 	 i16; 	  i32; 	   i64; 	f32;   f64;    char; cstr;  bool;
 //{SCAR}
 //---{{{
 static void DArray_put_u8(DArray* in_arr, uint8_t in_value, uint32_t in_index) { DArray_put(in_arr, &in_value, in_index); }
@@ -136,6 +139,7 @@ static void DArray_put_f32(DArray* in_arr, float in_value, uint32_t in_index) { 
 static void DArray_put_f64(DArray* in_arr, double in_value, uint32_t in_index) { DArray_put(in_arr, &in_value, in_index); }
 static void DArray_put_char(DArray* in_arr, char in_value, uint32_t in_index) { DArray_put(in_arr, &in_value, in_index); }
 static void DArray_put_cstr(DArray* in_arr, char* in_value, uint32_t in_index) { DArray_put(in_arr, &in_value, in_index); }
+static void DArray_put_bool(DArray* in_arr, bool in_value, uint32_t in_index) { DArray_put(in_arr, &in_value, in_index); }
 //---}}}
 
 
@@ -144,8 +148,8 @@ static void DArray_put_cstr(DArray* in_arr, char* in_value, uint32_t in_index) {
 void* DArray_get(DArray* in_arr, uint32_t in_index);
 
 //{SCAR}static _Tp_* DArray_get__Tn_(DArray* in_arr, uint32_t in_index) { return (_Tp_*)DArray_get(in_arr, in_index); }
-//{DESC}:12:_Tp_: uint8_t; uint16_t; uint32_t; uint64_t; int8_t; int16_t; int32_t; int64_t;	float; double; char; char*;
-//{DESC}:12:_Tn_: u8; 	   u16; 	 u32; 	   u64; 	 i8; 	 i16; 	  i32; 	   i64; 	f32;   f64;    char; cstr;
+//{DESC}:13:_Tp_: uint8_t; uint16_t; uint32_t; uint64_t; int8_t; int16_t; int32_t; int64_t;	float; double; char; char*; bool;
+//{DESC}:13:_Tn_: u8; 	   u16; 	 u32; 	   u64; 	 i8; 	 i16; 	  i32; 	   i64; 	f32;   f64;    char; cstr;  bool;
 //{SCAR}
 //---{{{
 static uint8_t* DArray_get_u8(DArray* in_arr, uint32_t in_index) { return (uint8_t*)DArray_get(in_arr, in_index); }
@@ -160,6 +164,7 @@ static float* DArray_get_f32(DArray* in_arr, uint32_t in_index) { return (float*
 static double* DArray_get_f64(DArray* in_arr, uint32_t in_index) { return (double*)DArray_get(in_arr, in_index); }
 static char* DArray_get_char(DArray* in_arr, uint32_t in_index) { return (char*)DArray_get(in_arr, in_index); }
 static char** DArray_get_cstr(DArray* in_arr, uint32_t in_index) { return (char**)DArray_get(in_arr, in_index); }
+static bool* DArray_get_bool(DArray* in_arr, uint32_t in_index) { return (bool*)DArray_get(in_arr, in_index); }
 //---}}}
 
 
@@ -168,8 +173,8 @@ static char** DArray_get_cstr(DArray* in_arr, uint32_t in_index) { return (char*
 void DArray_set(DArray* in_arr, uint32_t in_index, void* in_value);
 
 //{SCAR}static void DArray_set__Tn_(DArray* in_arr, uint32_t in_index, _Tp_ in_value) { DArray_set(in_arr, in_index, &in_value); }
-//{DESC}:12:_Tp_: uint8_t; uint16_t; uint32_t; uint64_t; int8_t; int16_t; int32_t; int64_t;	float; double; char; char*;
-//{DESC}:12:_Tn_: u8; 	   u16; 	 u32; 	   u64; 	 i8; 	 i16; 	  i32; 	   i64; 	f32;   f64;    char; cstr;
+//{DESC}:13:_Tp_: uint8_t; uint16_t; uint32_t; uint64_t; int8_t; int16_t; int32_t; int64_t;	float; double; char; char*; bool;
+//{DESC}:13:_Tn_: u8; 	   u16; 	 u32; 	   u64; 	 i8; 	 i16; 	  i32; 	   i64; 	f32;   f64;    char; cstr;  bool;
 //{SCAR}
 //---{{{
 static void DArray_set_u8(DArray* in_arr, uint32_t in_index, uint8_t in_value) { DArray_set(in_arr, in_index, &in_value); }
@@ -184,6 +189,7 @@ static void DArray_set_f32(DArray* in_arr, uint32_t in_index, float in_value) { 
 static void DArray_set_f64(DArray* in_arr, uint32_t in_index, double in_value) { DArray_set(in_arr, in_index, &in_value); }
 static void DArray_set_char(DArray* in_arr, uint32_t in_index, char in_value) { DArray_set(in_arr, in_index, &in_value); }
 static void DArray_set_cstr(DArray* in_arr, uint32_t in_index, char* in_value) { DArray_set(in_arr, in_index, &in_value); }
+static void DArray_set_bool(DArray* in_arr, uint32_t in_index, bool in_value) { DArray_set(in_arr, in_index, &in_value); }
 //---}}}
 
 
@@ -192,8 +198,8 @@ static void DArray_set_cstr(DArray* in_arr, uint32_t in_index, char* in_value) {
 void* DArray_begin(DArray* in_arr);
 
 //{SCAR}static _Tp_* DArray_begin__Tn_(DArray* in_arr) { return (_Tp_*)DArray_begin(in_arr); }
-//{DESC}:12:_Tp_: uint8_t; uint16_t; uint32_t; uint64_t; int8_t; int16_t; int32_t; int64_t;	float; double; char; char*;
-//{DESC}:12:_Tn_: u8; 	   u16; 	 u32; 	   u64; 	 i8; 	 i16; 	  i32; 	   i64; 	f32;   f64;    char; cstr;
+//{DESC}:13:_Tp_: uint8_t; uint16_t; uint32_t; uint64_t; int8_t; int16_t; int32_t; int64_t;	float; double; char; char*; bool;
+//{DESC}:13:_Tn_: u8; 	   u16; 	 u32; 	   u64; 	 i8; 	 i16; 	  i32; 	   i64; 	f32;   f64;    char; cstr;  bool;
 //{SCAR}
 //---{{{
 static uint8_t* DArray_begin_u8(DArray* in_arr) { return (uint8_t*)DArray_begin(in_arr); }
@@ -208,6 +214,7 @@ static float* DArray_begin_f32(DArray* in_arr) { return (float*)DArray_begin(in_
 static double* DArray_begin_f64(DArray* in_arr) { return (double*)DArray_begin(in_arr); }
 static char* DArray_begin_char(DArray* in_arr) { return (char*)DArray_begin(in_arr); }
 static char** DArray_begin_cstr(DArray* in_arr) { return (char**)DArray_begin(in_arr); }
+static bool* DArray_begin_bool(DArray* in_arr) { return (bool*)DArray_begin(in_arr); }
 //---}}}
 
 
@@ -216,8 +223,8 @@ static char** DArray_begin_cstr(DArray* in_arr) { return (char**)DArray_begin(in
 void* DArray_end(DArray* in_arr);
 
 //{SCAR}static _Tp_* DArray_end__Tn_(DArray* in_arr) { return (_Tp_*)DArray_end(in_arr); }
-//{DESC}:12:_Tp_: uint8_t; uint16_t; uint32_t; uint64_t; int8_t; int16_t; int32_t; int64_t;	float; double; char; char*;
-//{DESC}:12:_Tn_: u8; 	   u16; 	 u32; 	   u64; 	 i8; 	 i16; 	  i32; 	   i64; 	f32;   f64;    char; cstr;
+//{DESC}:13:_Tp_: uint8_t; uint16_t; uint32_t; uint64_t; int8_t; int16_t; int32_t; int64_t;	float; double; char; char*; bool;
+//{DESC}:13:_Tn_: u8; 	   u16; 	 u32; 	   u64; 	 i8; 	 i16; 	  i32; 	   i64; 	f32;   f64;    char; cstr;  bool;
 //{SCAR}
 //---{{{
 static uint8_t* DArray_end_u8(DArray* in_arr) { return (uint8_t*)DArray_end(in_arr); }
@@ -232,5 +239,6 @@ static float* DArray_end_f32(DArray* in_arr) { return (float*)DArray_end(in_arr)
 static double* DArray_end_f64(DArray* in_arr) { return (double*)DArray_end(in_arr); }
 static char* DArray_end_char(DArray* in_arr) { return (char*)DArray_end(in_arr); }
 static char** DArray_end_cstr(DArray* in_arr) { return (char**)DArray_end(in_arr); }
+static bool* DArray_end_bool(DArray* in_arr) { return (bool*)DArray_end(in_arr); }
 //---}}}
 

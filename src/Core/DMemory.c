@@ -1,4 +1,5 @@
 #include "DMemory.h"
+#ifdef DEBUG
 #include "DLog.h"
 #include <string.h>
 #include <stdio.h>
@@ -145,3 +146,4 @@ void DMemory_print() {
 		printf("\t0x%lx -> %s\n", *DArray_get_u64(g_DMemory, i), DStr_cstr(*(DStr**)DArray_get(g_DMemory_trace, i)));
 	}
 }
+#endif
