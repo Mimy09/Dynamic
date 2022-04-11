@@ -1,7 +1,7 @@
 #!/bin/sh
 
 # Make the lib and includes
-make clean; make; make lib
+make clean; make all-rel; make lib
 
 # Copy over the lib
 cp ./build/libdynamic.a /usr/local/lib/
@@ -16,6 +16,12 @@ fi
 
 # Copy over the includes
 cp -r ./build/inc/src/* /usr/local/include/dynamic/
+
+# Clean up the write protected build files
+make clean; make all-dbg; make lib
+
+# Copy over the debug lib
+cp ./build/libdynamic.a /usr/local/lib/libdynamic-dbg.a
 
 # Clean up the write protected build files
 make clean

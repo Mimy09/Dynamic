@@ -100,21 +100,30 @@ void DArray_append(DArray* in_arr, void* in_value, uint32_t in_size) {
 }
 
 void DArray_insert(DArray* in_arr, void* in_value, u_int32_t in_size, uint32_t in_index) {
-	uint32_t _new_size = (DArray_size(in_arr) + in_size) * in_arr->_stride;
+	if (in_arr->_back + in_size * in_arr->_stride > in_arr->_end) {
+		uint32_t _new_size = (DArray_size(in_arr) + in_size) * in_arr->_stride;
 
-	void* _new = DMalloc(_new_size);
-	uint32_t _size_left  = in_index * in_arr->_stride;
-	uint32_t _size_right = in_arr->_back - (in_arr->_start + (in_index * in_arr->_stride));
-	
-	memcpy(_new, in_arr->_start, _size_left);
-	memcpy(_new + _size_left, in_value, in_size * in_arr->_stride);
-	memcpy(_new + _size_left + (in_size * in_arr->_stride), in_arr->_start + _size_left, _size_right);
+		void* _new = DMalloc(_new_size + in_arr->_buffer);
+		uint32_t _size_left  = in_index * in_arr->_stride;
+		uint32_t _size_right = in_arr->_back - (in_arr->_start + (in_index * in_arr->_stride));
+		
+		memcpy(_new, in_arr->_start, _size_left);
+		memcpy(_new + _size_left, in_value, in_size * in_arr->_stride);
+		memcpy(_new + _size_left + (in_size * in_arr->_stride), in_arr->_start + _size_left, _size_right);
 
-	DFree(in_arr->_start);
+		DFree(in_arr->_start);
 
-	in_arr->_start = _new;
-	in_arr->_back  = in_arr->_start + _new_size;
-	in_arr->_end   = in_arr->_back;
+		in_arr->_start = _new;
+		in_arr->_back  = in_arr->_start + _new_size;
+		in_arr->_end   = in_arr->_back + in_arr->_buffer;
+	} else {
+		uint32_t _size_left  = in_index * in_arr->_stride;
+		uint32_t _size_right = in_arr->_back - (in_arr->_start + (in_index * in_arr->_stride));
+		memmove(in_arr->_start + _size_left + (in_size * in_arr->_stride), in_arr->_start + _size_left, _size_right);
+		memmove(in_arr->_start + _size_left, in_value, in_size * in_arr->_stride);
+
+		in_arr->_back += in_size * in_arr->_stride;
+	}
 }
 
 void DArray_put(DArray* in_arr, void* in_value, uint32_t in_index) {

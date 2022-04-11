@@ -230,6 +230,7 @@ void UT_DEvent() {
 	DEvent_free(e);
 }
 // }}}
+
 int main(int argc, char** argv) {
 	DPrint_set_level(DPRINT_ALL_FLAG);
 	DMemory_begin(true);
@@ -240,18 +241,27 @@ int main(int argc, char** argv) {
 	//UT_DStr();
 	//UT_DBits();
 	
-	DConsole* con = DConsole_create(argc, argv);
-	{
-		DConsole_Value cstr = DConsole_add_cstr(con, "--cstr");
-		DConsole_Value numb = DConsole_add_numb(con, "--numb");
-		DConsole_Value togg = DConsole_add_bool(con, "--bool");
 
-		if (cstr._used) DPrint_inf("--cstr %s", cstr._cstr);
-		if (numb._used) DPrint_inf("--numb %d", numb._numb);
-		if (togg._used) DPrint_inf("--bool %d", togg._bool);
-	}
+	DArray* arr = DArray_create(sizeof(u32));
+	DArray_buffer(arr, 7);
+	DArray_pushback_u32(arr, 0);
+	DArray_pushback_u32(arr, 1);
+	DArray_pushback_u32(arr, 2);
+	DArray_pushback_u32(arr, 3);
 
-	DConsole_free(con);
+	DArray_put_u32(arr, 9, 1);
+	DArray_put_u32(arr, 8, 1);
+	DArray_put_u32(arr, 7, 1);
+	DArray_put_u32(arr, 6, 1);
+	DArray_put_u32(arr, 5, 1);
+
+	for (u32 i = 0; i < DArray_size(arr); i++)
+		DPrint("%d\n", *DArray_get_u32(arr, i));
+	for (u32 i = 0; i < DArray_size_buffer(arr); i++)
+		DPrint("*\n");
+
+	DArray_free(arr);
+	
 
 	DMemory_end();
 	return 0;

@@ -3,6 +3,7 @@
 #include <string.h>
 #include <execinfo.h>
 #include <stdio.h>
+#include <time.h>
 
 DPrint_flag g_DPrint_level = 0;
 
@@ -105,4 +106,10 @@ void DPrint_get_trace(DStr* io_str, bool in_color) {
         }
     }
     free (strings);
+}
+
+uint64_t DPrint_get_time() {
+    struct timespec ts;
+    clock_gettime(CLOCK_REALTIME, &ts);
+    return (long long)(ts.tv_sec) * 1000000000LL + (long long)(ts.tv_nsec);
 }
