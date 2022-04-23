@@ -43,9 +43,15 @@ void DArray_buffer(DArray* in_arr, uint32_t in_buffer) {
 }
 
 void DArray_allocate(DArray* in_arr, void* in_data, uint32_t in_size) {
-	in_arr->_start  = in_data;
-	in_arr->_back   = in_data + (in_size * in_arr->_stride);
-	in_arr->_end    = in_arr->_back;
+	if (in_data != NULL) {
+		in_arr->_start  = in_data;
+		in_arr->_back   = in_data + (in_size * in_arr->_stride);
+		in_arr->_end    = in_arr->_back;
+	} else {
+		in_arr->_start  = DMalloc(in_size * in_arr->_stride);
+		in_arr->_back   = in_arr->_start + (in_size * in_arr->_stride);
+		in_arr->_end    = in_arr->_back;
+	}
 }
 
 void DArray_popback(DArray* in_arr) {
@@ -60,6 +66,17 @@ void DArray_clear(DArray* in_arr) {
 		in_arr->_start = NULL;
 		in_arr->_back  = NULL;
 		in_arr->_end   = NULL;
+	}
+}
+
+void DArray_fill(DArray* in_arr, void* in_value) {
+	if (in_value == NULL) {
+		memset(in_arr->_start, 0, DArray_size(in_arr) * in_arr->_stride);
+		return;
+	}
+	for (uint32_t i = 0; i < DArray_size(in_arr); i++) {
+		void* v = in_arr->_start + (i * in_arr->_stride);
+		memmove(v, in_value, in_arr->_stride);
 	}
 }
 

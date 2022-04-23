@@ -11,4 +11,5 @@
 struct DNet {
 	DNetSocket         _socket;
 	struct sockaddr_in _address;
+	DArray*            _threads;
 };

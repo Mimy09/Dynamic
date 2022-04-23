@@ -195,6 +195,7 @@ static void DArray_set_bool(DArray* in_arr, uint32_t in_index, bool in_value) { 
 
 // -- Begin -- //
 
+// Returns the begining of the array
 void* DArray_begin(DArray* in_arr);
 
 //{SCAR}static _Tp_* DArray_begin__Tn_(DArray* in_arr) { return (_Tp_*)DArray_begin(in_arr); }
@@ -220,6 +221,7 @@ static bool* DArray_begin_bool(DArray* in_arr) { return (bool*)DArray_begin(in_a
 
 // -- End -- //
 
+// Returns the end of the array
 void* DArray_end(DArray* in_arr);
 
 //{SCAR}static _Tp_* DArray_end__Tn_(DArray* in_arr) { return (_Tp_*)DArray_end(in_arr); }
@@ -242,3 +244,27 @@ static char** DArray_end_cstr(DArray* in_arr) { return (char**)DArray_end(in_arr
 static bool* DArray_end_bool(DArray* in_arr) { return (bool*)DArray_end(in_arr); }
 //---}}}
 
+// -- Fill -- //
+
+// Fills the array with an element
+void DArray_fill(DArray* in_arr, void* in_value);
+
+//{SCAR}static void DArray_fill__Tn_(DArray* in_arr, _Tp_ in_value) { DArray_fill(in_arr, &in_value); }
+//{DESC}:13:_Tp_: uint8_t; uint16_t; uint32_t; uint64_t; int8_t; int16_t; int32_t; int64_t;	float; double; char; char*; bool;
+//{DESC}:13:_Tn_: u8; 	   u16; 	 u32; 	   u64; 	 i8; 	 i16; 	  i32; 	   i64; 	f32;   f64;    char; cstr;  bool;
+//{SCAR}
+//---{{{
+static void DArray_fill_u8(DArray* in_arr, uint8_t in_value) { DArray_fill(in_arr, &in_value); }
+static void DArray_fill_u16(DArray* in_arr, uint16_t in_value) { DArray_fill(in_arr, &in_value); }
+static void DArray_fill_u32(DArray* in_arr, uint32_t in_value) { DArray_fill(in_arr, &in_value); }
+static void DArray_fill_u64(DArray* in_arr, uint64_t in_value) { DArray_fill(in_arr, &in_value); }
+static void DArray_fill_i8(DArray* in_arr, int8_t in_value) { DArray_fill(in_arr, &in_value); }
+static void DArray_fill_i16(DArray* in_arr, int16_t in_value) { DArray_fill(in_arr, &in_value); }
+static void DArray_fill_i32(DArray* in_arr, int32_t in_value) { DArray_fill(in_arr, &in_value); }
+static void DArray_fill_i64(DArray* in_arr, int64_t in_value) { DArray_fill(in_arr, &in_value); }
+static void DArray_fill_f32(DArray* in_arr, float in_value) { DArray_fill(in_arr, &in_value); }
+static void DArray_fill_f64(DArray* in_arr, double in_value) { DArray_fill(in_arr, &in_value); }
+static void DArray_fill_char(DArray* in_arr, char in_value) { DArray_fill(in_arr, &in_value); }
+static void DArray_fill_cstr(DArray* in_arr, char* in_value) { DArray_fill(in_arr, &in_value); }
+static void DArray_fill_bool(DArray* in_arr, bool in_value) { DArray_fill(in_arr, &in_value); }
+//---}}}

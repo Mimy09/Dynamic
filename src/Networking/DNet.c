@@ -1,27 +1,25 @@
 #include "DNet.internal.h"
+#include "../Core/DLog.h"
+#include <pthread.h>
+
+#define DNet_check(x, m, r) if ((x) == -1) { DPrint_err(m); return r; }
 
 DNet* DNet_client_create(uint32_t in_port, enum DNet_protocol in_protocol) {
 	DNet* net = (DNet*)malloc(sizeof(DNet));
 
-	if (in_protocol == DNET_TCP)
-		net->_socket = socket(AF_INET, SOCK_STREAM, 0);
-	else if (in_protocol == DNET_UDP)
-		net->_socket = socket(AF_INET, SOCK_DGRAM, 0);
-
-	if (net->_socket == -1) {
-		perror("ERR: SERVER");
-		return NULL;
+	if (in_protocol == DNET_TCP) {
+		DNet_check(net->_socket = socket(AF_INET, SOCK_STREAM, 0), "Failed to create TCP socket", NULL);
+	}
+	else if (in_protocol == DNET_UDP) {
+		DNet_check(net->_socket = socket(AF_INET, SOCK_DGRAM, 0), "Failed to create UDP socket", NULL);
 	}
 
 	net->_address.sin_family 	  = AF_INET;
 	net->_address.sin_port   	  = htons(in_port);
 	net->_address.sin_addr.s_addr = INADDR_ANY;
 
-	int32_t ret = connect(net->_socket, (struct sockaddr*)&net->_address, sizeof(net->_address));
-	
-	if (ret == -1) {
-		perror("ERR: CLIENT");
-	}
+	DNet_check(connect(net->_socket, (struct sockaddr*)&net->_address, sizeof(net->_address)), "Failed to connect to socket!", NULL);
+
 
 	return net;
 }
@@ -29,28 +27,15 @@ DNet* DNet_client_create(uint32_t in_port, enum DNet_protocol in_protocol) {
 DNet* DNet_server_create(uint32_t in_port, enum DNet_protocol in_protocol) {
 	DNet* net = (DNet*)malloc(sizeof(DNet));
 
-	if (in_protocol == DNET_TCP)
-		net->_socket = socket(AF_INET, SOCK_STREAM, 0);
-	else if (in_protocol == DNET_UDP)
-		net->_socket = socket(AF_INET, SOCK_DGRAM, 0);
-
-	if (net->_socket == -1) {
-		perror("ERR: SERVER");
-		return NULL;
-	}
+	if (in_protocol == DNET_TCP) { DNet_check(net->_socket = socket(AF_INET, SOCK_STREAM, 0), "Failed to create TCP socket", NULL); }
+	else if (in_protocol == DNET_UDP) { DNet_check(net->_socket = socket(AF_INET, SOCK_DGRAM, 0), "Failed to create UDP socket", NULL); }
 
 	net->_address.sin_family 	  = AF_INET;
 	net->_address.sin_port   	  = htons(in_port);
 	net->_address.sin_addr.s_addr = INADDR_ANY;
 
-	int32_t ret = bind(net->_socket, (struct sockaddr*)&net->_address, sizeof(net->_address));
-
-	if (ret == -1) {
-		perror("ERR: SERVER");
-		return NULL;
-	}
-
-	listen(net->_socket, 25);
+	DNet_check(bind(net->_socket, (struct sockaddr*)&net->_address, sizeof(net->_address)), "Failed to bind to socket!", NULL);
+	DNet_check(listen(net->_socket, 25), "Failed to listen to socket!", NULL);
 
 	return net;
 }

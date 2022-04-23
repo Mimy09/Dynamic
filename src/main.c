@@ -99,7 +99,6 @@ void UT_DArray() {
 // {{{
 void UT_Network() {
 	// DNetwork
-	// {{{
 	DNet* server = DNet_server_create(55377, DNET_TCP);
 	DNet* client = DNet_client_create(55377, DNET_TCP);
 	if (server != NULL && client != NULL) {
@@ -129,7 +128,6 @@ void UT_Network() {
 	}
 	DNet_free(client);
 	DNet_free(server);
-	// }}}
 }
 // }}}
 // DThread
@@ -241,26 +239,39 @@ int main(int argc, char** argv) {
 	//UT_DStr();
 	//UT_DBits();
 	
+	DConsole* con = DConsole_create(argc, argv);
+	DConsole_Value con_ser = DConsole_add_bool(con, "--server");
+	DConsole_Value con_cli = DConsole_add_bool(con, "--client");
+	DConsole_free(con);
+	
+	if (con_ser._used) {
+		DNet* s = DNet_server_create(554433, DNET_TCP);
 
-	DArray* arr = DArray_create(sizeof(u32));
-	DArray_buffer(arr, 7);
-	DArray_pushback_u32(arr, 0);
-	DArray_pushback_u32(arr, 1);
-	DArray_pushback_u32(arr, 2);
-	DArray_pushback_u32(arr, 3);
+		while(1) {
+			DNetSocket s_c = DNet_server_accept(s);
 
-	DArray_put_u32(arr, 9, 1);
-	DArray_put_u32(arr, 8, 1);
-	DArray_put_u32(arr, 7, 1);
-	DArray_put_u32(arr, 6, 1);
-	DArray_put_u32(arr, 5, 1);
+			char buff[256];
+			DNet_read(s_c, buff, 256);
+			DPrint_inf(buff);
 
-	for (u32 i = 0; i < DArray_size(arr); i++)
-		DPrint("%d\n", *DArray_get_u32(arr, i));
-	for (u32 i = 0; i < DArray_size_buffer(arr); i++)
-		DPrint("*\n");
+			if (strstr(buff, "quit")) {
+				break;
+			}
+		}
+		
+		DNet_free(s);
+	}
+	if (con_cli._used) {
+		DNet* c = DNet_client_create(554433, DNET_TCP);	
 
-	DArray_free(arr);
+		char buff[256];
+		fscanf(stdin, "%s", buff);
+
+		DNet_write(DNet_socket(c), buff, 256);
+
+		DNet_free(c);
+	}
+
 	
 
 	DMemory_end();
