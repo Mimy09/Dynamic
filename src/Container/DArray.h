@@ -16,7 +16,7 @@ void DArray_free(DArray* in_arr);
 void DArray_free_elements(DArray* in_arr);
 
 // Removes the elements from index of in_begin to in_end
-void DArray_remove(DArray* in_arr, uint32_t in_begin, u_int32_t in_end);
+void DArray_remove(DArray* in_arr, uint32_t in_begin, uint32_t in_end);
 
 // Removes the element at in_index
 void DArray_remove_at(DArray* in_arr, uint32_t in_index);
@@ -95,7 +95,7 @@ static void DArray_append_bool(DArray* in_arr, bool* in_value, uint32_t in_size)
 
 // -- Insert -- //
 
-void DArray_insert(DArray* in_arr, void* in_value, u_int32_t in_size, uint32_t in_index);
+void DArray_insert(DArray* in_arr, void* in_value, uint32_t in_size, uint32_t in_index);
 
 //{SCAR}static void DArray_insert__Tn_(DArray* in_arr, _Tp_* in_value, uint32_t in_size, uint32_t in_index) { DArray_insert(in_arr, in_value, in_size, in_index); }
 //{DESC}:13:_Tp_: uint8_t; uint16_t; uint32_t; uint64_t; int8_t; int16_t; int32_t; int64_t;	float; double; char; char*; bool;

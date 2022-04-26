@@ -17,9 +17,7 @@ bool    g_DMemory_logging   = false;
 
 #define DYNAMIC_MEMORY_LOG(type, ptr, size, color)\
     if (g_DMemory_logging) {\
-		DStr* trace = DStr_create(NULL); DPrint_get_trace(trace, true);\
-		printf (color type COL_BOLDWHITE " = %p" COL_RESET "[%u]   \t%s\n" COL_RESET, ptr, size, DStr_cstr(trace));\
-		DStr_free(trace);\
+		printf (color type COL_BOLDWHITE " = %p" COL_RESET "[%u]\n" COL_RESET, ptr, size);\
 	} 
 
 void DMemory_begin(bool in_logging) {

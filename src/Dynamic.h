@@ -20,6 +20,7 @@ extern "C" {
 #include "Networking/DNet.h"
 
 // System
+#include "System/DIO.h"
 #include "System/DThread.h"
 #include "System/DConsole.h"
 

@@ -26,7 +26,7 @@ void DArray_free_elements(DArray* in_arr) {
 	in_arr->_start = NULL;
 }
 
-void DArray_remove(DArray* in_arr, uint32_t in_begin, u_int32_t in_end) {
+void DArray_remove(DArray* in_arr, uint32_t in_begin, uint32_t in_end) {
 	uint32_t right = in_arr->_back - (in_arr->_start + ((in_end) * in_arr->_stride));
 	memmove(in_arr->_start + (in_begin * in_arr->_stride), in_arr->_start + ((in_end) * in_arr->_stride), right);
 	in_arr->_back -= in_arr->_stride * (in_end - in_begin);
@@ -48,9 +48,9 @@ void DArray_allocate(DArray* in_arr, void* in_data, uint32_t in_size) {
 		in_arr->_back   = in_data + (in_size * in_arr->_stride);
 		in_arr->_end    = in_arr->_back;
 	} else {
-		in_arr->_start  = DMalloc(in_size * in_arr->_stride);
-		in_arr->_back   = in_arr->_start + (in_size * in_arr->_stride);
-		in_arr->_end    = in_arr->_back;
+		in_arr->_start  = DCalloc(in_size, in_arr->_stride);
+		in_arr->_back   = in_arr->_start;
+		in_arr->_end    = in_arr->_start + (in_size * in_arr->_stride);
 	}
 }
 
@@ -116,7 +116,7 @@ void DArray_append(DArray* in_arr, void* in_value, uint32_t in_size) {
 	in_arr->_back += in_size * in_arr->_stride;
 }
 
-void DArray_insert(DArray* in_arr, void* in_value, u_int32_t in_size, uint32_t in_index) {
+void DArray_insert(DArray* in_arr, void* in_value, uint32_t in_size, uint32_t in_index) {
 	if (in_arr->_back + in_size * in_arr->_stride > in_arr->_end) {
 		uint32_t _new_size = (DArray_size(in_arr) + in_size) * in_arr->_stride;
 

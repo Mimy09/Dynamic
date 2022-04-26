@@ -23,9 +23,9 @@ void DEvent_free(DEvent* in_e) {
 	DFree(in_e);
 }
 
-void DEvent_add(DEvent* in_e, const char* in_event, void*(*in_func)(void*)) {
+void DEvent_add(DEvent* in_e, const char* in_event, void(*in_func)(void*)) {
 	if (DMap_get(in_e->_events, in_event) == NULL) {
-		DArray* arr = DArray_create(sizeof(void*(*)(void*)));
+		DArray* arr = DArray_create(sizeof(void(*)(void*)));
 		DArray_buffer(arr, 4);
 		DArray_pushback(arr, &in_func);
 		DMap_set(in_e->_events, in_event, &arr);
@@ -34,11 +34,11 @@ void DEvent_add(DEvent* in_e, const char* in_event, void*(*in_func)(void*)) {
 	}
 }
 
-void DEvent_call(DEvent* in_e, const char* in_event) {
+void DEvent_call(DEvent* in_e, const char* in_event, void* in_arg) {
 	DArray** arr = DMap_get(in_e->_events, in_event);
 	if (arr != NULL) {
 		for (uint32_t i = 0; i < DArray_size(*arr); i++) {
-			(*((void*(**)(void*))DArray_get(*arr, i)))(NULL);
+			(*((void(**)(void*))DArray_get(*arr, i)))(in_arg);
 		}
 	}
 }

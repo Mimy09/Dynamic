@@ -1,0 +1,17 @@
+{
+  "makefile.extensionOutputFolder": "./.vscode/make",
+  "makefile.launchConfigurations": [
+    {
+      "cwd": "/home/mitch/Programming/C++/Dynamic/build",
+      "binaryPath": "/home/mitch/Programming/C++/Dynamic/build/dynamic",
+      "binaryArgs": []
+    }
+  ],
+  "files.associations": {
+    "dynamic.h": "c",
+    "dtypes.h": "c",
+    "array": "c",
+    "string": "c",
+    "string_view": "c"
+  }
+}

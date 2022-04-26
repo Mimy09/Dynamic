@@ -25,7 +25,7 @@ CPU_COUNT=$(shell grep -c "^processor" /proc/cpuinfo)
 
 ##########################################
 ## Rules
-all-dbg: CFLAGS += -DDEBUG -g -fsanitize=address
+all-dbg: CFLAGS += -DDEBUG -g3 -fsanitize=address
 all-dbg: $(BUILD)/$(TARGET)-dbg
 all-rel: $(BUILD)/$(TARGET)-rel
 
