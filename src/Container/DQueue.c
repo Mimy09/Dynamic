@@ -1,10 +1,10 @@
 #include <stdlib.h>
 #include <string.h>
-#include "DBArray.internal.h"
+#include "DQueue.internal.h"
 #include "../Core/DMemory.h"
 
-DBArray* DBArray_create(uint32_t in_stride) {
-    DBArray* arr      = DMalloc(sizeof(DBArray));
+DQueue* DQueue_create(uint32_t in_stride) {
+    DQueue* arr      = DMalloc(sizeof(DQueue));
     arr->_start       = NULL;
     arr->_end         = NULL;
     arr->_start_alloc = NULL;
@@ -14,7 +14,7 @@ DBArray* DBArray_create(uint32_t in_stride) {
     return arr;
 }
 
-void DBArray_free(DBArray* in_arr) {
+void DQueue_free(DQueue* in_arr) {
     if (in_arr != NULL) {
         if (in_arr->_start_alloc != NULL)
             DFree(in_arr->_start_alloc);
@@ -22,11 +22,11 @@ void DBArray_free(DBArray* in_arr) {
     }
 }
 
-void DBArray_buffer(DBArray* in_arr, uint32_t in_buffer) {
+void DQueue_buffer(DQueue* in_arr, uint32_t in_buffer) {
     in_arr->_buffer = (in_buffer - 1) * in_arr->_stride;
 }
 
-uint32_t DBArray_size(DBArray* in_arr) {
+uint32_t DQueue_size(DQueue* in_arr) {
     if (in_arr->_end == in_arr->_start) return 0;
     if (in_arr->_end > in_arr->_start) {
         return (in_arr->_end - in_arr->_start) / in_arr->_stride;
@@ -34,7 +34,7 @@ uint32_t DBArray_size(DBArray* in_arr) {
         return ((in_arr->_end_alloc - in_arr->_start) + (in_arr->_end - in_arr->_start_alloc)) / in_arr->_stride;
     }
 }
-uint32_t DBArray_size_buffer(DBArray* in_arr) {
+uint32_t DQueue_size_buffer(DQueue* in_arr) {
     if (in_arr->_end == in_arr->_start)
         return (in_arr->_end_alloc - in_arr->_start_alloc) / in_arr->_stride;
     if (in_arr->_end > in_arr->_start) {
@@ -44,7 +44,7 @@ uint32_t DBArray_size_buffer(DBArray* in_arr) {
     }
 }
 
-void DBArray_pushback(DBArray* in_arr, void* in_value) {
+void DQueue_pushback(DQueue* in_arr, void* in_value) {
 	if (in_value == NULL) return;
 
 	if (in_arr->_start_alloc == NULL) {
@@ -92,7 +92,7 @@ void DBArray_pushback(DBArray* in_arr, void* in_value) {
 	memmove(in_arr->_end, in_value, in_arr->_stride);
 	in_arr->_end += in_arr->_stride;
 }
-void DBArray_popback(DBArray* in_arr) {
+void DQueue_popback(DQueue* in_arr) {
     if (in_arr->_end != in_arr->_start) {
         if (in_arr->_end == in_arr->_start_alloc) {
             in_arr->_end = in_arr->_end_alloc;
@@ -101,7 +101,7 @@ void DBArray_popback(DBArray* in_arr) {
         }
     }
 }
-void DBArray_pushfront(DBArray* in_arr, void* in_value) {
+void DQueue_pushfront(DQueue* in_arr, void* in_value) {
     if (in_arr->_start_alloc == NULL) {
 		in_arr->_start_alloc = DMalloc(in_arr->_stride + in_arr->_buffer);
 		in_arr->_end         = in_arr->_start_alloc + in_arr->_stride;
@@ -118,7 +118,7 @@ void DBArray_pushfront(DBArray* in_arr, void* in_value) {
     in_arr->_start -= in_arr->_stride;
     memmove(in_arr->_start, in_value, in_arr->_stride);
 }
-void DBArray_popfront(DBArray* in_arr) {
+void DQueue_popfront(DQueue* in_arr) {
     if (in_arr->_start != in_arr->_end) {
         if (in_arr->_start + in_arr->_stride == in_arr->_end_alloc) {
             in_arr->_start = in_arr->_start_alloc;
@@ -128,8 +128,8 @@ void DBArray_popfront(DBArray* in_arr) {
     }
 }
 
-void* DBArray_get(DBArray* in_arr, uint32_t in_index) {
-    if (in_index > DBArray_size(in_arr) - 1) return NULL;
+void* DQueue_get(DQueue* in_arr, uint32_t in_index) {
+    if (in_index > DQueue_size(in_arr) - 1) return NULL;
 
     in_index *= in_arr->_stride;
     if (in_index > in_arr->_end_alloc - in_arr->_start_alloc) return NULL;
@@ -141,7 +141,7 @@ void* DBArray_get(DBArray* in_arr, uint32_t in_index) {
         return in_arr->_start + in_index;
     }
 }
-void* DBArray_get_real(DBArray* in_arr, uint32_t in_index) {
+void* DQueue_get_real(DQueue* in_arr, uint32_t in_index) {
     in_index *= in_arr->_stride;
     
     if (in_index > in_arr->_end_alloc - in_arr->_start_alloc) return NULL;
@@ -157,18 +157,18 @@ void* DBArray_get_real(DBArray* in_arr, uint32_t in_index) {
     return in_arr->_start_alloc + in_index;
 }
 
-void* DBArray_begin(DBArray* in_arr) {
+void* DQueue_begin(DQueue* in_arr) {
     return in_arr->_start;
 }
-void* DBArray_begin_alloc(DBArray* in_arr) {
+void* DQueue_begin_alloc(DQueue* in_arr) {
     return in_arr->_start_alloc;
 }
-void* DBArray_end(DBArray* in_arr) {
+void* DQueue_end(DQueue* in_arr) {
     return in_arr->_end;
 }
-void* DBArray_end_alloc(DBArray* in_arr) {
+void* DQueue_end_alloc(DQueue* in_arr) {
     return in_arr->_end_alloc;
 }
-uint32_t DBArray_stride(DBArray* in_arr) {
+uint32_t DQueue_stride(DQueue* in_arr) {
     return in_arr->_stride;
 }

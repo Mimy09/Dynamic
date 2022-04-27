@@ -15,6 +15,7 @@
     "string_view": "c",
     "darray.internal.h": "c",
     "stddef.h": "c",
-    "pthread.h": "c"
+    "pthread.h": "c",
+    "dqueue.internal.h": "c"
   }
 }

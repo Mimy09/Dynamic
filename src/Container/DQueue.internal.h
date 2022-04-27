@@ -1,7 +1,7 @@
 #pragma once
-#include "DBArray.h"
+#include "DQueue.h"
 
-struct DBArray {
+struct DQueue {
     uint32_t _stride;
     uint32_t _buffer;
     void* _start;

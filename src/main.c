@@ -226,45 +226,45 @@ int main(int argc, char** argv) {
 	DPrint_set_level(DPRINT_ALL_FLAG);
 	DMemory_begin(true);
 
-	DBArray* arr = DBArray_create(sizeof(uint32_t));
-	DBArray_buffer(arr, 5);
+	DQueue* arr = DQueue_create(sizeof(uint32_t));
+	DQueue_buffer(arr, 5);
 	int32_t i;
 	
-	DBArray_pushfront_u32(arr, 1);
-	DBArray_pushfront_u32(arr, 2);
-	DBArray_pushfront_u32(arr, 3);
-	DBArray_pushfront_u32(arr, 4);
-	DBArray_pushback_u32(arr, 5);
+	DQueue_pushfront_u32(arr, 1);
+	DQueue_pushfront_u32(arr, 2);
+	DQueue_pushfront_u32(arr, 3);
+	DQueue_pushfront_u32(arr, 4);
+	DQueue_pushback_u32(arr, 5);
 
 	
-	uint32_t _sz = DBArray_size(arr);
-	uint32_t _bz = DBArray_size_buffer(arr);
+	uint32_t _sz = DQueue_size(arr);
+	uint32_t _bz = DQueue_size_buffer(arr);
 	DPrint("[%u][%u]\n----\nReal: ", _sz, _bz);
 	for (int i = 0; i < _sz + _bz; i++) {
-		uint32_t* p = DBArray_get_real_u32(arr, i);
+		uint32_t* p = DQueue_get_real_u32(arr, i);
 		if (p != NULL) DPrint("%d ", *p);
 		else DPrint("# ");
 	}
 	DPrint("\n      ");
 	for (int i = 0; i < _sz + _bz; i++) {
-		if (DBArray_begin_alloc(arr) + (i * DBArray_stride(arr)) == DBArray_begin(arr)) DPrint("^ ");
+		if (DQueue_begin_alloc(arr) + (i * DQueue_stride(arr)) == DQueue_begin(arr)) DPrint("^ ");
 		else DPrint("  ");
 	}
 	DPrint("\n      ");
 	for (int i = 0; i < _sz + _bz; i++) {
-		if (DBArray_begin_alloc(arr) + (i * DBArray_stride(arr)) == DBArray_end(arr)) DPrint("^ ");
+		if (DQueue_begin_alloc(arr) + (i * DQueue_stride(arr)) == DQueue_end(arr)) DPrint("^ ");
 		else DPrint("  ");
 	}
 	DPrint("\n----\nFake: ");
 	for (int i = 0; i < _sz; i++) {
-		uint32_t* p = DBArray_get_u32(arr, i);
+		uint32_t* p = DQueue_get_u32(arr, i);
 		if (p != NULL) DPrint("%d ", *p);
 		else DPrint("# ");
 	}
 	DPrint("\n----\n");
 
 
-	DBArray_free(arr);
+	DQueue_free(arr);
 
 	DMemory_end();
 	return 0;
