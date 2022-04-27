@@ -61,19 +61,6 @@ void DQueue_pushback(DQueue* in_arr, void* in_value) {
                 in_arr->_end         = in_arr->_start_alloc + _size - in_arr->_stride;
                 in_arr->_end_alloc   = in_arr->_start_alloc + _size + in_arr->_stride + in_arr->_buffer;
             }
-        } else if (in_arr->_end == in_arr->_end_alloc) {
-            in_arr->_end = in_arr->_start_alloc;
-            if (in_arr->_end + in_arr->_stride == in_arr->_start) {
-                uint32_t _size = in_arr->_end_alloc - in_arr->_start_alloc;
-                uint32_t _size_r = (in_arr->_end_alloc - in_arr->_start);
-                void* _tmp = DMalloc(_size + in_arr->_stride + in_arr->_buffer);
-                memcpy(_tmp, in_arr->_start, _size_r);
-                DFree(in_arr->_start_alloc);
-                in_arr->_start_alloc = _tmp;
-                in_arr->_start       = _tmp;
-                in_arr->_end         = in_arr->_start + _size - in_arr->_stride;
-                in_arr->_end_alloc   = in_arr->_start + _size + in_arr->_stride + in_arr->_buffer;
-            }
         } else if (in_arr->_end + in_arr->_stride == in_arr->_start) {
             uint32_t _size = in_arr->_end_alloc - in_arr->_start_alloc;
             uint32_t _size_r = (in_arr->_end_alloc - in_arr->_start);
@@ -83,14 +70,18 @@ void DQueue_pushback(DQueue* in_arr, void* in_value) {
             memcpy(_tmp + _size_r, in_arr->_start_alloc, _size_l);
             DFree(in_arr->_start_alloc);
             in_arr->_start_alloc = _tmp;
-            in_arr->_start       = _tmp;
-            in_arr->_end         = in_arr->_start + _size - in_arr->_stride;
-            in_arr->_end_alloc   = in_arr->_start + _size + in_arr->_stride + in_arr->_buffer;
+            in_arr->_start       = in_arr->_start_alloc;
+            in_arr->_end         = in_arr->_start_alloc + _size - in_arr->_stride;
+            in_arr->_end_alloc   = in_arr->_start_alloc + _size + in_arr->_stride + in_arr->_buffer;
         }
     }
 
 	memmove(in_arr->_end, in_value, in_arr->_stride);
 	in_arr->_end += in_arr->_stride;
+
+    if (in_arr->_end == in_arr->_end_alloc) {
+        in_arr->_end = in_arr->_start_alloc;
+    }
 }
 void DQueue_popback(DQueue* in_arr) {
     if (in_arr->_end != in_arr->_start) {
@@ -104,14 +95,34 @@ void DQueue_popback(DQueue* in_arr) {
 void DQueue_pushfront(DQueue* in_arr, void* in_value) {
     if (in_arr->_start_alloc == NULL) {
 		in_arr->_start_alloc = DMalloc(in_arr->_stride + in_arr->_buffer);
-		in_arr->_end         = in_arr->_start_alloc + in_arr->_stride;
+		in_arr->_end         = in_arr->_start_alloc;
 		in_arr->_end_alloc   = in_arr->_start_alloc + in_arr->_stride + in_arr->_buffer;
         in_arr->_start       = in_arr->_end_alloc;
-        memmove(in_arr->_start_alloc, in_value, in_arr->_stride);
-        return;
     } else {
-        if (in_arr->_start == in_arr->_start_alloc - in_arr->_stride) {
-            in_arr->_start = in_arr->_end_alloc - in_arr->_stride;
+        if (in_arr->_start - in_arr->_stride == in_arr->_end) {
+            if (in_arr->_end == in_arr->_start_alloc) {
+                memmove(in_arr->_start_alloc, in_value, in_arr->_stride);
+                uint32_t _size = in_arr->_end_alloc - in_arr->_start_alloc + in_arr->_stride;
+                in_arr->_start_alloc = DRealloc(in_arr->_start_alloc, _size + in_arr->_stride + in_arr->_buffer);
+                in_arr->_end         = in_arr->_start_alloc + _size - in_arr->_stride;
+                in_arr->_end_alloc   = in_arr->_start_alloc + _size + in_arr->_stride + in_arr->_buffer;
+                in_arr->_start       = in_arr->_end_alloc;
+                return;
+            } else {
+                uint32_t _size = in_arr->_end_alloc - in_arr->_start_alloc;
+                uint32_t _size_r = (in_arr->_end_alloc - in_arr->_start);
+                uint32_t _size_l = (in_arr->_end - in_arr->_start_alloc);
+                void* _tmp = DMalloc(_size + in_arr->_stride + in_arr->_buffer);
+                memcpy(_tmp, in_arr->_start, _size_r);
+                memcpy(_tmp + _size_r, in_arr->_start_alloc, _size_l);
+                DFree(in_arr->_start_alloc);
+                in_arr->_start_alloc = _tmp;
+                in_arr->_end         = in_arr->_start_alloc + _size - in_arr->_stride;
+                in_arr->_end_alloc   = in_arr->_start_alloc + _size + in_arr->_stride + in_arr->_buffer;
+                in_arr->_start       = in_arr->_end_alloc;
+            }
+        } else if (in_arr->_start == in_arr->_start_alloc) {
+            in_arr->_start = in_arr->_end_alloc;
         }
     }
     

@@ -230,11 +230,16 @@ int main(int argc, char** argv) {
 	DQueue_buffer(arr, 5);
 	int32_t i;
 	
-	DQueue_pushfront_u32(arr, 1);
-	DQueue_pushfront_u32(arr, 2);
-	DQueue_pushfront_u32(arr, 3);
-	DQueue_pushfront_u32(arr, 4);
+	DQueue_pushback_u32(arr, 1);
+	DQueue_popfront(arr);
+	DQueue_pushback_u32(arr, 2);
+	DQueue_pushback_u32(arr, 3);
+	DQueue_pushback_u32(arr, 4);
 	DQueue_pushback_u32(arr, 5);
+	DQueue_pushfront_u32(arr, 5);
+	DQueue_pushfront_u32(arr, 5);
+	DQueue_popfront(arr);
+	DQueue_pushfront_u32(arr, 5);
 
 	
 	uint32_t _sz = DQueue_size(arr);
@@ -246,12 +251,12 @@ int main(int argc, char** argv) {
 		else DPrint("# ");
 	}
 	DPrint("\n      ");
-	for (int i = 0; i < _sz + _bz; i++) {
+	for (int i = 0; i < _sz + _bz + 1; i++) {
 		if (DQueue_begin_alloc(arr) + (i * DQueue_stride(arr)) == DQueue_begin(arr)) DPrint("^ ");
 		else DPrint("  ");
 	}
 	DPrint("\n      ");
-	for (int i = 0; i < _sz + _bz; i++) {
+	for (int i = 0; i < _sz + _bz + 1; i++) {
 		if (DQueue_begin_alloc(arr) + (i * DQueue_stride(arr)) == DQueue_end(arr)) DPrint("^ ");
 		else DPrint("  ");
 	}
