@@ -224,8 +224,47 @@ void UT_DEvent() {
 
 int main(int argc, char** argv) {
 	DPrint_set_level(DPRINT_ALL_FLAG);
-	DMemory_begin(false);
+	DMemory_begin(true);
 
+	DBArray* arr = DBArray_create(sizeof(uint32_t));
+	DBArray_buffer(arr, 5);
+	int32_t i;
+	
+	DBArray_pushfront_u32(arr, 1);
+	DBArray_pushfront_u32(arr, 2);
+	DBArray_pushfront_u32(arr, 3);
+	DBArray_pushfront_u32(arr, 4);
+	DBArray_pushback_u32(arr, 5);
+
+	
+	uint32_t _sz = DBArray_size(arr);
+	uint32_t _bz = DBArray_size_buffer(arr);
+	DPrint("[%u][%u]\n----\nReal: ", _sz, _bz);
+	for (int i = 0; i < _sz + _bz; i++) {
+		uint32_t* p = DBArray_get_real_u32(arr, i);
+		if (p != NULL) DPrint("%d ", *p);
+		else DPrint("# ");
+	}
+	DPrint("\n      ");
+	for (int i = 0; i < _sz + _bz; i++) {
+		if (DBArray_begin_alloc(arr) + (i * DBArray_stride(arr)) == DBArray_begin(arr)) DPrint("^ ");
+		else DPrint("  ");
+	}
+	DPrint("\n      ");
+	for (int i = 0; i < _sz + _bz; i++) {
+		if (DBArray_begin_alloc(arr) + (i * DBArray_stride(arr)) == DBArray_end(arr)) DPrint("^ ");
+		else DPrint("  ");
+	}
+	DPrint("\n----\nFake: ");
+	for (int i = 0; i < _sz; i++) {
+		uint32_t* p = DBArray_get_u32(arr, i);
+		if (p != NULL) DPrint("%d ", *p);
+		else DPrint("# ");
+	}
+	DPrint("\n----\n");
+
+
+	DBArray_free(arr);
 
 	DMemory_end();
 	return 0;

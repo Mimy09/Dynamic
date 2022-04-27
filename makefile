@@ -1,6 +1,7 @@
 ##########################################
 ## GLOBAL
 
+MAKEFLAGS += --silent
 TARGET 	:= dynamic
 CC		:= gcc
 

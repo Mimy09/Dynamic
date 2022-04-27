@@ -12,6 +12,9 @@
     "dtypes.h": "c",
     "array": "c",
     "string": "c",
-    "string_view": "c"
+    "string_view": "c",
+    "darray.internal.h": "c",
+    "stddef.h": "c",
+    "pthread.h": "c"
   }
 }

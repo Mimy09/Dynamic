@@ -6,6 +6,7 @@ extern "C" {
 
 // Container
 #include "Container/DArray.h"
+#include "Container/DBArray.h"
 #include "Container/DBits.h"
 #include "Container/DEvent.h"
 #include "Container/DLinkList.h"
