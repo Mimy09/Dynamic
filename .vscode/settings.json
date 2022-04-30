@@ -16,6 +16,8 @@
     "darray.internal.h": "c",
     "stddef.h": "c",
     "pthread.h": "c",
-    "dqueue.internal.h": "c"
+    "dqueue.internal.h": "c",
+    "random": "c",
+    "numbers": "c"
   }
 }

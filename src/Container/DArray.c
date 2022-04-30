@@ -5,7 +5,7 @@
 DArray* DArray_create(uint32_t in_stride) {
 	DArray* arr = (DArray*)DMalloc(sizeof(DArray));
 	arr->_stride = in_stride;
-	arr->_buffer = 0;
+	arr->_buffer = in_stride * 10;
 	arr->_start  = NULL;
 	arr->_back   = NULL;
 	arr->_end    = NULL;
@@ -61,12 +61,7 @@ void DArray_popback(DArray* in_arr) {
 }
 
 void DArray_clear(DArray* in_arr) {
-	if (in_arr->_start != NULL) {
-		DFree(in_arr->_start);
-		in_arr->_start = NULL;
-		in_arr->_back  = NULL;
-		in_arr->_end   = NULL;
-	}
+	in_arr->_back = in_arr->_start;
 }
 
 void DArray_fill(DArray* in_arr, void* in_value) {
@@ -148,6 +143,7 @@ void DArray_put(DArray* in_arr, void* in_value, uint32_t in_index) {
 }
 
 void* DArray_get(DArray* in_arr, uint32_t in_index) {
+	if (in_arr->_start + (in_index * in_arr->_stride) > in_arr->_back - in_arr->_stride) return NULL;
 	return (in_arr->_start + (in_index * in_arr->_stride));
 }
 

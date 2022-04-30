@@ -7,7 +7,7 @@ CC		:= gcc
 
 # Flags
 INCS	?= -I./src/
-LIBS	?= -lpthread -lm -lcurl
+LIBS	?= -lpthread -lm -lcurl -lGL -lGLU
 MKF_DIR	:= $(abspath $(lastword $(MAKEFILE_LIST)))
 CUR_DIR	:= $(MKF_DIR:makefile=)
 

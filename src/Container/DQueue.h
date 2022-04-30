@@ -1,4 +1,5 @@
 #pragma once
+#include "DArray.h"
 #include "../System/DTypes.h"
 
 typedef struct DQueue DQueue;
@@ -38,6 +39,21 @@ void* DQueue_end_alloc(DQueue* in_arr);
 
 // Get the stride of the array
 uint32_t DQueue_stride(DQueue* in_arr);
+
+// Creates a copy of the data into a DArray (doesn't deallocate original DQueue)
+DArray* DQueue_to_DArray(DQueue* in_arr);
+
+// Creates a copy of the data into a DQueue (doesn't deallocate original DArray)
+DQueue* DArray_to_DQueue(DArray* in_arr);
+
+// Moves the data into a DArray (original DQueue is deallocated)
+DArray* DQueue_convert_to_DArray(DQueue* in_arr);
+
+// Moves the data into a DQueue (original DArray is deallocated)
+DQueue* DArray_convert_to_DQueue(DArray* in_arr);
+
+// Clears all the elements out of the queue
+void DQueue_clear(DQueue* in_arr);
 
 // -- Pushback -- //
 

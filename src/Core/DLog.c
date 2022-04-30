@@ -68,6 +68,8 @@ int32_t _DPrint_err_(DTrace in_trace, const char* in_format, ...) {
     return done;
 }
 
+void DPrint_nl() { printf("\n"); }
+
 void DPrint_get_trace(DStr* io_str, bool in_color) {
     void *array[10];
     char **strings;

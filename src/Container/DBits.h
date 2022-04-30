@@ -1,5 +1,24 @@
 #pragma once
 #include "../System/DTypes.h"
+#include <stdio.h>
+
+static void DBits_write_bits(u8* b, u8* p, u8 s, u8 v) {
+	if (v > (0xFF >> *p) || s + *p > 8) return;
+	*b = (*b) ^ v << *p; *p += s;
+}
+
+static u8 DBits_read_bits(u8 b, u8* p, u8 s) {
+	u8 r = (b & (0xFF >> (8 - s)) << *p) >> *p; *p += s;
+	return r;
+}
+
+static void DBits_print_bits(u8* b, u8 s) {
+	for (u32 i = 0; i < s; i++) {
+		for (u32 j = 0; j < 8; j++) {
+			if (b[i] & 1 << j) printf("1"); else printf("0");
+		} printf("\n");
+	}
+}
 
 //{SCAR}typedef struct DBits__Tn_ DBits__Tn_;
 //{DESC}:4:_Tn_: 8; 16; 32; 64;

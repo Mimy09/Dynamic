@@ -7,6 +7,7 @@
 #pragma region Unit Tests
 
 #pragma region Array
+// {{{
 void UT_DArray() {
 	#pragma region Pushback
 	#if 0
@@ -91,8 +92,10 @@ void UT_DArray() {
 	#endif
 	#pragma endregion
 }
+// }}}
 #pragma endregion
 #pragma region Network
+// {{{
 void UT_Network() {
 	DNet* server = DNet_server_create(55377, DNET_TCP);
 	DNet* client = DNet_client_create(55377, DNET_TCP);
@@ -124,8 +127,10 @@ void UT_Network() {
 	DNet_free(client);
 	DNet_free(server);
 }
+// }}}
 #pragma endregion
 #pragma region Thread
+// {{{
 void thread_function(DThread* in_thread) {
 	while (DThread_get_running(in_thread)) {
 		printf("Thread: %s\n", *(char**)DThread_get_args(in_thread));
@@ -141,8 +146,10 @@ void UT_Thread() {
 	}
 	DThread_free(thread);
 }
+// }}}
 #pragma endregion
 #pragma region String
+// {{{
 void UT_DStr() {
 	DStr* str = DStr_create("Hello World! It's a new world!");
 	DStr_replace(str, "World", "Test");
@@ -170,8 +177,10 @@ void UT_DStr() {
 
 	DStr_free(str);
 }
+// }}}
 #pragma endregion
 #pragma region Bits
+// {{{
 void UT_DBits() {
 	DBits_8* bit = DBits_create_8();
 
@@ -186,8 +195,10 @@ void UT_DBits() {
 
 	DBits_free_8(bit);
 }
+// }}}
 #pragma endregion
 #pragma region DEvent
+// {{{
 void e_func1(void* in_arg) { DPrint_inf("Called 1: %s", *(char**)in_arg); }
 void e_func2(void* in_arg) { DPrint_inf("Called 2: %s", *(char**)in_arg); }
 void e_func3(void* in_arg) { DPrint_inf("Called 3: %s", *(char**)in_arg); }
@@ -217,59 +228,259 @@ void UT_DEvent() {
 	DPrint_dbg("DEvent_free");
 	DEvent_free(e);
 }
+// }}}
+#pragma endregion
+#pragma region DQueue
+// {{{
+void UT_DQueue_print(DQueue* in_arr) {
+	u32 qsz = DQueue_size(in_arr);
+	u32 qbz = DQueue_size_buffer(in_arr);
+	DPrint_inf("SZ: %d", qsz);
+	DPrint_inf("BZ: %d", qbz);
+	DPrint("Fake: ");
+	for (int i = 0; i < qsz + qbz;  i++) {
+		u32* f = DQueue_get_u32(in_arr, i); if (f != NULL) DPrint("%d ", *f); else DPrint("# ");
+	}
+	DPrint("\nReal: ");
+	for (int i = 0; i < qsz + qbz;  i++) {
+		u32* r = DQueue_get_real_u32(in_arr, i); if (r != NULL) DPrint("%d ", *r); else DPrint("# ");
+	}
+	DPrint("\n      ");
+	for (int i = 0; i < (qsz + qbz + 1) * DQueue_stride(in_arr);  i += DQueue_stride(in_arr)) {
+		if (DQueue_begin_alloc(in_arr)+  i == DQueue_begin(in_arr)) DPrint("^ ");
+		else if (DQueue_begin_alloc(in_arr)+  i == DQueue_end(in_arr)) DPrint("^ "); else DPrint("  ");
+	}
+	DPrint("\n      ");
+	for (int i = 0; i < (qsz + qbz + 1) * DQueue_stride(in_arr);  i += DQueue_stride(in_arr)) {
+		if (DQueue_begin_alloc(in_arr) + i == DQueue_begin(in_arr) && DQueue_begin(in_arr) == DQueue_end(in_arr)) DPrint("^ ");
+		else if (DQueue_begin_alloc(in_arr) + i == DQueue_begin(in_arr)) DPrint("S ");
+		else if (DQueue_begin_alloc(in_arr) + i == DQueue_end(in_arr)) DPrint("E "); else DPrint("  ");
+	}
+	DPrint_nl();
+}
+bool UT_DQueue_check(DQueue* in_arr, i32* in_fake, i32* in_real, u32 in_size) {
+	u32 _sz = DQueue_size(in_arr) + DQueue_size_buffer(in_arr);
+	if (in_size != _sz) { DPrint_wrn("Size missmatch: expected %d, got %d", _sz, in_size); return false; }
+	for (int i = 0; i < _sz;  i++) {
+		u32* f = DQueue_get_u32(in_arr, i); u32* r = DQueue_get_real_u32(in_arr, i);
+		if (in_fake[i] == -1 && f != NULL) return false;
+		if (in_real[i] == -1 && r != NULL) return false;
+		if (in_fake[i] != -1 && *f != in_fake[i]) return false;
+		if (in_real[i] != -1 && *r != in_real[i]) return false;
+	}
+	return true;
+}
+void UT_DQueue() {
+	DPrint("UT_DQueue\n==============================================================================\n");
+	DQueue* q = DQueue_create(sizeof(uint32_t));
+	DQueue_buffer(q, 4);
+	{ // -- 0 -- // {{{
+		i32 _comp_f[4] = { 1, 2, 3, -1 };
+		i32 _comp_r[4] = { 1, 2, 3, -1 };
+		DQueue_pushback_u32(q, 1);
+		DQueue_pushback_u32(q, 2);
+		DQueue_pushback_u32(q, 3);
+
+		if (!UT_DQueue_check(q, _comp_f, _comp_r, 4)) { DPrint_err("[0]" COL_BOLDRED " Error:" COL_RESET); UT_DQueue_print(q); }
+		else { DPrint_inf("[0]" COL_BOLDGREEN " Passed" COL_RESET); }
+
+		DQueue_free(q); q = DQueue_create(sizeof(uint32_t)); DQueue_buffer(q, 4);
+	} // }}}
+	{ // -- 1 -- // {{{
+		i32 _comp_f[4] = { 3, 2, 1, -1 };
+		i32 _comp_r[4] = { -1, 3, 2, 1 };
+		DQueue_pushfront_u32(q, 1);
+		DQueue_pushfront_u32(q, 2);
+		DQueue_pushfront_u32(q, 3);
+
+		if (!UT_DQueue_check(q, _comp_f, _comp_r, 4)) { DPrint_err("[1]" COL_BOLDRED " Error:" COL_RESET); UT_DQueue_print(q); }
+		else { DPrint_inf("[1]" COL_BOLDGREEN " Passed" COL_RESET); }
+
+		DQueue_free(q); q = DQueue_create(sizeof(uint32_t)); DQueue_buffer(q, 4);
+	} // }}}
+	{ // -- 2 -- // {{{
+		i32 _comp_f[8] = { 1, 2, 3, 4, -1, -1, -1, -1 };
+		i32 _comp_r[8] = { 1, 2, 3, 4, -1, -1, -1, -1 };
+		DQueue_pushback_u32(q, 1);
+		DQueue_pushback_u32(q, 2);
+		DQueue_pushback_u32(q, 3);
+		DQueue_pushback_u32(q, 4);
+
+		if (!UT_DQueue_check(q, _comp_f, _comp_r, 8)) { DPrint_err("[2]" COL_BOLDRED " Error:" COL_RESET); UT_DQueue_print(q); }
+		else { DPrint_inf("[2]" COL_BOLDGREEN " Passed" COL_RESET); }
+
+		DQueue_free(q); q = DQueue_create(sizeof(uint32_t)); DQueue_buffer(q, 4);
+	} // }}}
+	{ // -- 3 -- // {{{
+		i32 _comp_f[4] = { 2, 3, 4, -1 };
+		i32 _comp_r[4] = { -1, 2, 3, 4 };
+		DQueue_pushback_u32(q, 1);
+		DQueue_popfront(q);
+		DQueue_pushback_u32(q, 2);
+		DQueue_pushback_u32(q, 3);
+		DQueue_pushback_u32(q, 4);
+
+		if (!UT_DQueue_check(q, _comp_f, _comp_r, 4)) { DPrint_err("[3]" COL_BOLDRED " Error:" COL_RESET); UT_DQueue_print(q); }
+		else { DPrint_inf("[3]" COL_BOLDGREEN " Passed" COL_RESET); }
+
+		DQueue_free(q); q = DQueue_create(sizeof(uint32_t)); DQueue_buffer(q, 4);
+	} // }}}
+	{ // -- 4 -- // {{{
+		i32 _comp_f[8] = { 2, 3, 4, 5, -1, -1, -1, -1 };
+		i32 _comp_r[8] = { 2, 3, 4, 5, -1, -1, -1, -1 };
+		DQueue_pushback_u32(q, 1);
+		DQueue_popfront(q);
+		DQueue_pushback_u32(q, 2);
+		DQueue_pushback_u32(q, 3);
+		DQueue_pushback_u32(q, 4);
+		DQueue_pushback_u32(q, 5);
+
+		if (!UT_DQueue_check(q, _comp_f, _comp_r, 8)) { DPrint_err("[4]" COL_BOLDRED " Error:" COL_RESET); UT_DQueue_print(q); }
+		else { DPrint_inf("[4]" COL_BOLDGREEN " Passed" COL_RESET); }
+
+		DQueue_free(q); q = DQueue_create(sizeof(uint32_t)); DQueue_buffer(q, 4);
+	} // }}}
+	{ // -- 5 -- // {{{
+		i32 _comp_f[8] = { 2, 3, 4, 5, -1, -1, -1, -1 };
+		i32 _comp_r[8] = { 2, 3, 4, 5, -1, -1, -1, -1 };
+		DQueue_pushback_u32(q, 1);
+		DQueue_pushback_u32(q, 1);
+		DQueue_popfront(q);
+		DQueue_popfront(q);
+		DQueue_pushback_u32(q, 2);
+		DQueue_pushback_u32(q, 3);
+		DQueue_pushback_u32(q, 4);
+		DQueue_pushback_u32(q, 5);
+
+		if (!UT_DQueue_check(q, _comp_f, _comp_r, 8)) { DPrint_err("[5]" COL_BOLDRED " Error:" COL_RESET); UT_DQueue_print(q); }
+		else { DPrint_inf("[5]" COL_BOLDGREEN " Passed" COL_RESET); }
+
+		DQueue_free(q); q = DQueue_create(sizeof(uint32_t)); DQueue_buffer(q, 4);
+	} // }}}
+	{ // -- 7 -- // {{{
+		i32 _comp_f[8] = { 4, 3, 2, 1, -1, -1, -1, -1 };
+		i32 _comp_r[8] = { 4, 3, 2, 1, -1, -1, -1, -1 };
+		DQueue_pushfront_u32(q, 1);
+		DQueue_pushfront_u32(q, 2);
+		DQueue_pushfront_u32(q, 3);
+		DQueue_pushfront_u32(q, 4);
+
+		if (!UT_DQueue_check(q, _comp_f, _comp_r, 8)) { DPrint_err("[7]" COL_BOLDRED " Error:" COL_RESET); UT_DQueue_print(q); }
+		else { DPrint_inf("[7]" COL_BOLDGREEN " Passed" COL_RESET); }
+
+		DQueue_free(q); q = DQueue_create(sizeof(uint32_t)); DQueue_buffer(q, 4);
+	} // }}}
+	{ // -- 8 -- // {{{
+		i32 _comp_f[8] = { 1, 2, 3, 4, -1, -1, -1, -1 };
+		i32 _comp_r[8] = { 2, 3, 4, -1, -1, -1, -1, 1 };
+		DQueue_pushback_u32(q, 1);
+		DQueue_pushback_u32(q, 1);
+		DQueue_popfront(q);
+		DQueue_popfront(q);
+		DQueue_pushback_u32(q, 2);
+		DQueue_pushback_u32(q, 3);
+		DQueue_pushback_u32(q, 4);
+		DQueue_pushfront_u32(q, 1);
+
+		if (!UT_DQueue_check(q, _comp_f, _comp_r, 8)) { DPrint_err("[8]" COL_BOLDRED " Error:" COL_RESET); UT_DQueue_print(q); }
+		else { DPrint_inf("[8]" COL_BOLDGREEN " Passed" COL_RESET); }
+
+		DQueue_free(q); q = DQueue_create(sizeof(uint32_t)); DQueue_buffer(q, 4);
+	} // }}}
+	{ // -- 9 -- // {{{
+		i32 _comp_f[8] = { 3, 1, 2, 3, -1, -1, -1, -1 };
+		i32 _comp_r[8] = { 1, 2, 3, -1, -1, -1, -1, 3 };
+		DQueue_pushback_u32(q, 1);
+		DQueue_pushback_u32(q, 2);
+		DQueue_pushback_u32(q, 3);
+		DQueue_pushfront_u32(q, 3);
+
+		if (!UT_DQueue_check(q, _comp_f, _comp_r, 8)) { DPrint_err("[9]" COL_BOLDRED " Error:" COL_RESET); UT_DQueue_print(q); }
+		else { DPrint_inf("[9]" COL_BOLDGREEN " Passed" COL_RESET); }
+
+		DQueue_free(q); q = DQueue_create(sizeof(uint32_t)); DQueue_buffer(q, 4);
+	} // }}}
+	{ // -- 10 -- // {{{
+		i32 _comp_f[9] = { 1, 2, 3, 4, 5, -1, -1, -1 };
+		i32 _comp_r[9] = { 1, 2, 3, 4, 5, -1, -1, -1 };
+		DArray* a = DArray_create(sizeof(u32));
+		DArray_buffer(a, 3);
+		DArray_pushback_u32(a, 1);
+		DArray_pushback_u32(a, 2);
+		DArray_pushback_u32(a, 3);
+		DArray_pushback_u32(a, 4);
+		DQueue_free(q);
+		q = DArray_convert_to_DQueue(a);
+		DQueue_buffer(q, 4);
+		DQueue_pushback_u32(q, 5);
+
+		if (!UT_DQueue_check(q, _comp_f, _comp_r, 8)) { DPrint_err("[10]" COL_BOLDRED " Error:" COL_RESET); UT_DQueue_print(q); }
+		else { DPrint_inf("[10]" COL_BOLDGREEN " Passed" COL_RESET); }
+
+		DQueue_free(q); q = DQueue_create(sizeof(uint32_t)); DQueue_buffer(q, 4);
+	} // }}}
+	{ // -- 11 -- // {{{
+		i32 _comp_f[9] = { 5, 1, 2, 3, 4, -1, -1, -1 };
+		i32 _comp_r[9] = { 1, 2, 3, 4, -1, -1, -1, 5 };
+		DArray* a = DArray_create(sizeof(u32));
+		DArray_buffer(a, 3);
+		DArray_pushback_u32(a, 1);
+		DArray_pushback_u32(a, 2);
+		DArray_pushback_u32(a, 3);
+		DArray_pushback_u32(a, 4);
+		DQueue_free(q);
+		q = DArray_convert_to_DQueue(a);
+		DQueue_buffer(q, 4);
+		DQueue_pushfront_u32(q, 5);
+
+		if (!UT_DQueue_check(q, _comp_f, _comp_r, 8)) { DPrint_err("[11]" COL_BOLDRED " Error:" COL_RESET); UT_DQueue_print(q); }
+		else { DPrint_inf("[11]" COL_BOLDGREEN " Passed" COL_RESET); }
+
+		DQueue_free(q); q = DQueue_create(sizeof(uint32_t)); DQueue_buffer(q, 4);
+	} // }}}
+	DPrint("==============================================================================\n");
+
+	DQueue_free(q);
+}
+// }}}
 #pragma endregion
 
-#pragma endregion
+#define xd1 0x1
+#define xd2 0x3
+#define xd3 0x7
+#define xd4 0xf
+#define xd5 0x1f
+#define xd6 0x3f
+#define xd7 0x7f
+#define xd8 0xff
 
 
 int main(int argc, char** argv) {
-	DPrint_set_level(DPRINT_ALL_FLAG);
-	DMemory_begin(true);
+	DPrint_set_level(
+			DPRINT_INF_FLAG
+//			| DPRINT_DBG_FLAG
+			| DPRINT_WRN_FLAG
+			| DPRINT_ERR_FLAG
+			);
+	DMemory_begin(false);
 
-	DQueue* arr = DQueue_create(sizeof(uint32_t));
-	DQueue_buffer(arr, 5);
-	int32_t i;
-	
-	DQueue_pushback_u32(arr, 1);
-	DQueue_popfront(arr);
-	DQueue_pushback_u32(arr, 2);
-	DQueue_pushback_u32(arr, 3);
-	DQueue_pushback_u32(arr, 4);
-	DQueue_pushback_u32(arr, 5);
-	DQueue_pushfront_u32(arr, 5);
-	DQueue_pushfront_u32(arr, 5);
-	DQueue_popfront(arr);
-	DQueue_pushfront_u32(arr, 5);
+	u8* bytes = (u8*)malloc(sizeof(u8) * 8);
+	memset(bytes, 0, 8);
 
-	
-	uint32_t _sz = DQueue_size(arr);
-	uint32_t _bz = DQueue_size_buffer(arr);
-	DPrint("[%u][%u]\n----\nReal: ", _sz, _bz);
-	for (int i = 0; i < _sz + _bz; i++) {
-		uint32_t* p = DQueue_get_real_u32(arr, i);
-		if (p != NULL) DPrint("%d ", *p);
-		else DPrint("# ");
-	}
-	DPrint("\n      ");
-	for (int i = 0; i < _sz + _bz + 1; i++) {
-		if (DQueue_begin_alloc(arr) + (i * DQueue_stride(arr)) == DQueue_begin(arr)) DPrint("^ ");
-		else DPrint("  ");
-	}
-	DPrint("\n      ");
-	for (int i = 0; i < _sz + _bz + 1; i++) {
-		if (DQueue_begin_alloc(arr) + (i * DQueue_stride(arr)) == DQueue_end(arr)) DPrint("^ ");
-		else DPrint("  ");
-	}
-	DPrint("\n----\nFake: ");
-	for (int i = 0; i < _sz; i++) {
-		uint32_t* p = DQueue_get_u32(arr, i);
-		if (p != NULL) DPrint("%d ", *p);
-		else DPrint("# ");
-	}
-	DPrint("\n----\n");
+	u8 p = 0;
+	DBits_write_bits(&bytes[0], &p, 2, 1);
+	DBits_write_bits(&bytes[0], &p, 2, 2);
+	DBits_write_bits(&bytes[0], &p, 2, 3);
+	DBits_write_bits(&bytes[0], &p, 2, 2);
 
+	p = 0;
+	for (u32 i = 0; i < 4; i++)
+		printf("%d ", DBits_read_bits(bytes[0], &p, 2));
+	printf("\n");
 
-	DQueue_free(arr);
+	DBits_print_bits(bytes, 8);
+
+	free(bytes);
 
 	DMemory_end();
 	return 0;

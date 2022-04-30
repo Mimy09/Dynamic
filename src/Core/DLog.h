@@ -63,6 +63,8 @@ if ((g_DPrint_level & DPRINT_WRN_FLAG) != 0) { DTrace t = { ._file = __FILE__, .
 #define DPrint_err(...) \
 if ((g_DPrint_level & DPRINT_ERR_FLAG) != 0) { DTrace t = { ._file = __FILE__, ._func = __FUNCTION__, ._line = __LINE__ }; _DPrint_err_(t, __VA_ARGS__); }
 
+void DPrint_nl();
+
 void DPrint_get_trace(DStr* io_str, bool in_color);
 
 uint64_t DPrint_get_time();
