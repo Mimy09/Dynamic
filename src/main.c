@@ -2,6 +2,14 @@
 #include <stdlib.h>
 #include "Dynamic.h"
 
+void Update(void* args) {
+
+}
+
+void Draw(void* args) {
+
+}
+
 int main(int argc, char** argv) {
 	DPrint_set_level(
 			DPRINT_INF_FLAG
@@ -11,12 +19,14 @@ int main(int argc, char** argv) {
 			);
 	DMemory_begin(false);
 
-	DVulkan* vk = DVulkan_create("Test", 800, 600);
-	if (vk == NULL) {
-		DVulkan_free(vk);
-		return EXIT_FAILURE;
+	DVulkan* vk = NULL;
+
+	if ((vk = DVulkan_create("Test", 800, 600)) == NULL) {
+		DVulkan_free(vk); return EXIT_FAILURE;
 	}
 
+	DVulkan_hook_update(vk, Update);
+	DVulkan_hook_draw(vk, Update);
 	DVulkan_update(vk);
 
 	DVulkan_free(vk);

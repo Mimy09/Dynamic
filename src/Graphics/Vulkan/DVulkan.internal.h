@@ -13,14 +13,18 @@ struct DVulkanWindow {
 	const char* _name;
 };
 
-struct DVulkan {
-	struct DVulkanWindow _window;
+struct DVulkanCore {
 	VkInstance _instance;
 	VkPhysicalDevice _device;
+	DArray* _validationLayers;
+	DArray* _extensionLayers;
+};
+
+struct DVulkan {
+	struct DVulkanWindow _window;
+	struct DVulkanCore   _core;
 	void(*_update)(void*);
 	void(*_draw)(void*);
 	void(*_create)(void*);
 	void(*_free)(void*);
-	DArray* _validationLayers;
-	DArray* _extensionLayers;
 };
