@@ -75,6 +75,19 @@ void DArray_fill(DArray* in_arr, void* in_value) {
 	}
 }
 
+void DArray_fill_buffer(DArray* in_arr, void* in_value) {
+	if (in_value == NULL) {
+		memset(in_arr->_start, 0, in_arr->_end - in_arr->_start);
+		in_arr->_back = in_arr->_end;
+		return;
+	}
+	for (uint32_t i = 0; i < DArray_size(in_arr) + DArray_size_buffer(in_arr); i++) {
+		void* v = in_arr->_start + (i * in_arr->_stride);
+		memmove(v, in_value, in_arr->_stride);
+	}
+	in_arr->_back = in_arr->_end;
+}
+
 void DArray_pushback(DArray* in_arr, void* in_value) {
 	if (in_value == NULL) return;
 

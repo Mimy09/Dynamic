@@ -7,7 +7,7 @@ CC		:= gcc
 
 # Flags
 INCS	?= -I./src/
-LIBS	?= -lpthread -lm -lcurl -lGL -lGLU
+LIBS	?= -lpthread -lm -lcurl -lGL -lglfw -lvulkan
 MKF_DIR	:= $(abspath $(lastword $(MAKEFILE_LIST)))
 CUR_DIR	:= $(MKF_DIR:makefile=)
 
@@ -26,7 +26,7 @@ CPU_COUNT=$(shell grep -c "^processor" /proc/cpuinfo)
 
 ##########################################
 ## Rules
-all-dbg: CFLAGS += -DDEBUG -g3 -fsanitize=address
+all-dbg: CFLAGS += -DDEBUG -g
 all-dbg: $(BUILD)/$(TARGET)-dbg
 all-rel: $(BUILD)/$(TARGET)-rel
 
@@ -72,7 +72,7 @@ run:
 
 .PHONY: leak
 leak:
-	valgrind --undef-value-errors=no --leak-check=full $(BUILD)/$(TARGET)
+	valgrind --leak-check=full --track-origins=yes $(BUILD)/$(TARGET)
 
 .PHONY: gdb
 gdb:

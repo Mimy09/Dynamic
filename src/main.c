@@ -445,42 +445,25 @@ void UT_DQueue() {
 // }}}
 #pragma endregion
 
-#define xd1 0x1
-#define xd2 0x3
-#define xd3 0x7
-#define xd4 0xf
-#define xd5 0x1f
-#define xd6 0x3f
-#define xd7 0x7f
-#define xd8 0xff
-
 
 int main(int argc, char** argv) {
 	DPrint_set_level(
 			DPRINT_INF_FLAG
-//			| DPRINT_DBG_FLAG
+			| DPRINT_DBG_FLAG
 			| DPRINT_WRN_FLAG
 			| DPRINT_ERR_FLAG
 			);
 	DMemory_begin(false);
 
-	u8* bytes = (u8*)malloc(sizeof(u8) * 8);
-	memset(bytes, 0, 8);
+	DVulkan* vk = DVulkan_create("Test", 800, 600);
+	if (vk == NULL) {
+		DVulkan_free(vk);
+		return EXIT_FAILURE;
+	}
 
-	u8 p = 0;
-	DBits_write_bits(&bytes[0], &p, 2, 1);
-	DBits_write_bits(&bytes[0], &p, 2, 2);
-	DBits_write_bits(&bytes[0], &p, 2, 3);
-	DBits_write_bits(&bytes[0], &p, 2, 2);
+	DVulkan_update(vk);
 
-	p = 0;
-	for (u32 i = 0; i < 4; i++)
-		printf("%d ", DBits_read_bits(bytes[0], &p, 2));
-	printf("\n");
-
-	DBits_print_bits(bytes, 8);
-
-	free(bytes);
+	DVulkan_free(vk);
 
 	DMemory_end();
 	return 0;

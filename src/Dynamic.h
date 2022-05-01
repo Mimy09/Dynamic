@@ -17,6 +17,9 @@ extern "C" {
 #include "Core/DLog.h"
 #include "Core/DMemory.h"
 
+// Graphics
+#include "Graphics/Vulkan/DVulkan.h"
+
 // Networking
 #include "Networking/DNet.h"
 
