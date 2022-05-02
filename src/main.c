@@ -23,13 +23,13 @@ int main(int argc, char** argv) {
 
 	if ((vk = DVulkan_create("Test", 800, 600)) == NULL) {
 		DVulkan_free(vk); return EXIT_FAILURE;
+	} else {
+		DVulkan_hook_update(vk, Update);
+		DVulkan_hook_draw(vk, Update);
+		DVulkan_update(vk);
+
+		DVulkan_free(vk);
 	}
-
-	DVulkan_hook_update(vk, Update);
-	DVulkan_hook_draw(vk, Update);
-	DVulkan_update(vk);
-
-	DVulkan_free(vk);
 
 	DMemory_end();
 	return 0;

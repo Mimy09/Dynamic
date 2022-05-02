@@ -174,6 +174,14 @@ uint32_t DArray_stride(DArray* in_arr) {
 uint32_t DArray_size_buffer(DArray* in_arr) {
 	return (in_arr->_end - in_arr->_back) / in_arr->_stride;
 }
+uint32_t DArray_size_whole(DArray* in_arr) {
+	return (in_arr->_end - in_arr->_start) / in_arr->_stride; 
+}
+
+void DArray_set_size(DArray* in_arr, uint32_t in_size) {
+	if (in_size > DArray_size_whole(in_arr)) return;
+	in_arr->_back = in_arr->_start + (in_size * in_arr->_stride);
+}
 
 void* DArray_begin(DArray* in_arr) {
 	return in_arr->_start;

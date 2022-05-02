@@ -13,9 +13,19 @@ struct DVulkanWindow {
 	const char* _name;
 };
 
+struct DVulkanQueueFamilies {
+	uint32_t* _graphics;
+	uint32_t* _present;
+};
+
 struct DVulkanCore {
+	struct DVulkanQueueFamilies _queues;
 	VkInstance _instance;
-	VkPhysicalDevice _device;
+	VkPhysicalDevice _physical_device;
+	VkDevice _logical_device;
+	VkQueue _graphicsQueue;
+	VkQueue _presentQueue;
+	VkSurfaceKHR _surface;
 	DArray* _validationLayers;
 	DArray* _extensionLayers;
 };

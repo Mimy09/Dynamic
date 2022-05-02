@@ -36,11 +36,17 @@ void DArray_clear(DArray* in_arr);
 // Size of the elements in the array
 uint32_t DArray_size(DArray* in_arr);
 
+// Size of the buffer
+uint32_t DArray_size_buffer(DArray* in_arr);
+
 // Size of the type of elements in the array
 uint32_t DArray_stride(DArray* in_arr);
 
-// Size of the buffer
-uint32_t DArray_size_buffer(DArray* in_arr);
+// Size of the elements in the array pluss the buffer
+uint32_t DArray_size_whole(DArray* in_arr);
+
+// Sets the size of the array (0..buffer size)
+void DArray_set_size(DArray* in_arr, uint32_t in_size);
 
 // -- Pushback -- //
 
