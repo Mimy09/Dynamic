@@ -26,8 +26,10 @@ struct DVulkanCore {
 	VkQueue _graphicsQueue;
 	VkQueue _presentQueue;
 	VkSurfaceKHR _surface;
+	DArray* _queueInfos;
 	DArray* _validationLayers;
 	DArray* _extensionLayers;
+	DArray* _extensions;
 };
 
 struct DVulkan {

@@ -20,7 +20,6 @@ int main(int argc, char** argv) {
 	DMemory_begin(false);
 
 	DVulkan* vk = NULL;
-
 	if ((vk = DVulkan_create("Test", 800, 600)) == NULL) {
 		DVulkan_free(vk); return EXIT_FAILURE;
 	} else {

@@ -31,6 +31,7 @@ DArray* check_VkExtensionProperties(DArray* in_extensions) {
 		if (j == DArray_size(avaliable)) {
 			DPrint_dbg(COL_RED "%s" COL_RESET, *DArray_get_cstr(in_extensions, i));
 			DArray_remove_at(in_extensions, i);
+			i--;
 		}
 	}
 	DArray_free(avaliable);
@@ -80,6 +81,43 @@ void    create_VkLayerProperties(DVulkan* in_vk) {
 	DPrint_dbg("==== VULKAN VALIDATION ====");
 	check_VkLayerProperties(in_vk->_core._validationLayers);
 	DPrint_nl();
+}
+
+DArray* get_VkDeviceExtension(VkPhysicalDevice in_device) {
+	uint32_t extensionCount = 0;
+	vkEnumerateDeviceExtensionProperties(in_device, NULL, &extensionCount, NULL);
+	DArray* extensions = DArray_create(sizeof(VkExtensionProperties));
+	DArray_allocate(extensions, NULL, extensionCount);
+	DArray_set_size(extensions, extensionCount);
+	vkEnumerateDeviceExtensionProperties(in_device, NULL, &extensionCount, (VkExtensionProperties*)DArray_begin(extensions));
+	return extensions;
+}
+DArray* check_VkDeviceExtension(VkPhysicalDevice in_device, DArray* in_extensions) {
+	if (DArray_size(in_extensions) == 0) { DPrint_dbg("No extensions active!") return in_extensions; }
+	DArray* avaliable = get_VkDeviceExtension(in_device);
+	for (uint32_t i = 0; i < DArray_size(in_extensions); i++) {
+		uint32_t j = 0;
+		for (; j < DArray_size(avaliable); j++) {
+			if (strcmp(*DArray_get_cstr(in_extensions, i), ((VkExtensionProperties*)DArray_get(avaliable, j))->extensionName) == 0) {
+				DPrint_dbg(COL_GREEN "%s" COL_RESET, *DArray_get_cstr(in_extensions, i));
+				break;
+			}
+		}
+		if (j == DArray_size(avaliable)) {
+			DPrint_dbg(COL_RED "%s" COL_RESET, *DArray_get_cstr(in_extensions, i));
+			DArray_remove_at(in_extensions, i);
+			i--;
+		}
+	}
+	DArray_free(avaliable);
+	return in_extensions;
+}
+void    create_VkDeviceExtension(VkPhysicalDevice in_device, DVulkan* in_vk) {
+	in_vk->_core._extensions = DArray_create(sizeof(char*));
+	DArray_pushback_cstr(in_vk->_core._extensions, VK_KHR_SWAPCHAIN_EXTENSION_NAME);
+
+	DPrint_dbg("==== DEVICE EXTENSIONS ====");
+	check_VkDeviceExtension(in_device, in_vk->_core._extensions);
 }
 
 DArray* get_VkQueueFamilyProperties(VkPhysicalDevice in_device) {
@@ -150,8 +188,14 @@ bool    create_VkPhysicalDevices(DVulkan* in_vk) {
 			if (in_vk->_core._queues._graphics != NULL && in_vk->_core._queues._present != NULL) {
 				DPrint_inf("Graphics Queue: %d", *in_vk->_core._queues._graphics);
 				DPrint_inf("Present Queue: %d", *in_vk->_core._queues._present);
-				in_vk->_core._physical_device = *(VkPhysicalDevice*)DArray_get(avaliable, i);
-				break;
+				DPrint_nl();
+
+				create_VkDeviceExtension(*(VkPhysicalDevice*)DArray_get(avaliable, i), in_vk);
+
+				if (DArray_size(in_vk->_core._extensions) != 0) {
+					in_vk->_core._physical_device = *(VkPhysicalDevice*)DArray_get(avaliable, i);
+					break;
+				}
 			}
 		}
 	}
@@ -193,22 +237,36 @@ bool create_VkInstance(DVulkan* in_vk) {
 	return true;
 }
 bool create_VkDevice(DVulkan* in_vk) {
+	in_vk->_core._queueInfos = DArray_create(sizeof(VkDeviceQueueCreateInfo));
+	DArray* uniqueQueueFamilies = DArray_create(sizeof(uint32_t));
+	DArray_pushback_u32(uniqueQueueFamilies, *in_vk->_core._queues._graphics);
+	if (!DArray_contains_u32(uniqueQueueFamilies, *in_vk->_core._queues._present)) {
+		DArray_pushback_u32(uniqueQueueFamilies, *in_vk->_core._queues._present);
+	}
+
 	float queuePriority = 1.0f;
-	VkDeviceQueueCreateInfo queueCreateInfo = {
-		.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO,
-		.queueFamilyIndex = *in_vk->_core._queues._graphics,
-		.queueCount = 1,
-		.pQueuePriorities = &queuePriority
-	};
+	for (uint32_t i = 0; i < DArray_size(uniqueQueueFamilies); i++) {
+		VkDeviceQueueCreateInfo queueCreateInfo = {
+			.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO,
+			.queueFamilyIndex = *DArray_get_u32(uniqueQueueFamilies, i),
+			.queueCount = 1,
+			.pQueuePriorities = &queuePriority,
+		};
+		DArray_pushback(in_vk->_core._queueInfos, &queueCreateInfo);
+	}
+
+	DArray_free(uniqueQueueFamilies);
 
 	VkPhysicalDeviceFeatures deviceFeatures = {};
 
 	VkDeviceCreateInfo createInfo = {
 		.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO,
-		.pQueueCreateInfos = &queueCreateInfo,
-		.queueCreateInfoCount = 1,
+		.pQueueCreateInfos = (VkDeviceQueueCreateInfo*)DArray_begin(in_vk->_core._queueInfos),
+		.queueCreateInfoCount = DArray_size(in_vk->_core._queueInfos),
 		.pEnabledFeatures = &deviceFeatures,
-		.enabledLayerCount = 0
+		.enabledLayerCount = 0,
+		.enabledExtensionCount = DArray_size(in_vk->_core._extensions),
+		.ppEnabledExtensionNames = (const char* const*)DArray_begin(in_vk->_core._extensions)
 	};
 
 	if (DArray_size(in_vk->_core._validationLayers) > 0) {
@@ -256,8 +314,10 @@ DVulkan* DVulkan_create(const char* in_name, const uint32_t in_width, const uint
 		._graphicsQueue    = VK_NULL_HANDLE,
 		._presentQueue     = VK_NULL_HANDLE,
 		._surface 		   = VK_NULL_HANDLE,
+		._queueInfos	   = NULL,
 		._extensionLayers  = NULL,
-		._validationLayers = NULL
+		._validationLayers = NULL,
+		._extensions 	   = NULL
 	};
 	vk->_core._queues = (struct DVulkanQueueFamilies) {
 		._graphics = NULL,
@@ -279,6 +339,7 @@ DVulkan* DVulkan_create(const char* in_name, const uint32_t in_width, const uint
 	if (!create_VkSurface(vk)) { DPrint_err("failed to create window surface!"); return NULL; }
 	if (!create_VkPhysicalDevices(vk)) { DPrint_err("Failed to find a suitable GPU!") return NULL; }
 	if (!create_VkDevice(vk)) { DPrint_err("Failed to create logical device!"); return NULL; }
+	
 
 	return vk;
 }
@@ -289,8 +350,10 @@ void DVulkan_free(DVulkan* in_vk) {
 	vkDestroyInstance(in_vk->_core._instance, NULL);
 	glfwDestroyWindow(in_vk->_window._window);
 	glfwTerminate();
+	DArray_free(in_vk->_core._queueInfos);
 	DArray_free(in_vk->_core._validationLayers);
 	DArray_free(in_vk->_core._extensionLayers);
+	DArray_free(in_vk->_core._extensions);
 	DFree(in_vk->_core._queues._graphics);
 	DFree(in_vk->_core._queues._present);
 	DFree(in_vk);

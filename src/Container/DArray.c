@@ -190,3 +190,9 @@ void* DArray_begin(DArray* in_arr) {
 void* DArray_end(DArray* in_arr) {
 	return in_arr->_back - in_arr->_stride;
 }
+
+int32_t DArray_contains(DArray* in_arr, void* in_value) {
+	for (uint32_t i = 0; i < DArray_size(in_arr); i++)
+		if (DArray_get(in_arr, i) == in_value)
+			return i;
+}
