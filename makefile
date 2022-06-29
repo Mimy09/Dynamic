@@ -1,13 +1,14 @@
 ##########################################
 ## GLOBAL
 
-MAKEFLAGS += --silent
+# MAKEFLAGS += --silent
 TARGET 	:= dynamic
-CC		:= gcc
+CC		:= /usr/bin/gcc
 
 # Flags
-INCS	?= -I./src/
-LIBS	?= -lpthread -lm -lcurl -lGL -lglfw -lvulkan
+INCS	?= -I./src/ -I/usr/include/
+INCS	+= -L/usr/lib/
+LIBS	?= -lpthread -lm
 MKF_DIR	:= $(abspath $(lastword $(MAKEFILE_LIST)))
 CUR_DIR	:= $(MKF_DIR:makefile=)
 
@@ -31,9 +32,9 @@ all-dbg: $(BUILD)/$(TARGET)-dbg
 all-rel: $(BUILD)/$(TARGET)-rel
 
 rel:
-	$(MAKE) clean; $(MAKE) -j$(CPU_COUNT) all-rel; $(MAKE) run
+	$(MAKE) clean; $(MAKE) -j$(CPU_COUNT) all-rel > $(TARGET).log; mv $(TARGET).log ./build/; $(MAKE) run
 dbg:
-	$(MAKE) clean; $(MAKE) -j$(CPU_COUNT) all-dbg; $(MAKE) run
+	$(MAKE) clean; $(MAKE) -j$(CPU_COUNT) all-dbg > $(TARGET).log; mv $(TARGET).log ./build/; $(MAKE) run
 
 # library
 lib: $(OBJS) $(HEAD)
@@ -41,12 +42,12 @@ lib: $(OBJS) $(HEAD)
 
 # debug excecutiable
 $(BUILD)/$(TARGET)-dbg: $(OBJS)
-	$(CC) $(CFLAGS) $(OBJS) -o $(BUILD)/$(TARGET) $(INCS) $(LIBS) $(LDFLAGS)
+	$(CC) $(CFLAGS) $(OBJS) -o $(BUILD)/$(TARGET).exe $(INCS) $(LIBS) $(LDFLAGS)
 
 # release excecutiable
 $(BUILD)/$(TARGET)-rel: $(OBJS)
-	$(CC) $(CFLAGS) $(OBJS) -o $(BUILD)/$(TARGET) $(INCS) $(LIBS) $(LDFLAGS)
-	strip $(BUILD)/$(TARGET)
+	$(CC) $(CFLAGS) $(OBJS) -o $(BUILD)/$(TARGET).exe $(INCS) $(LIBS) $(LDFLAGS)
+	strip $(BUILD)/$(TARGET).exe
 
 # c++ source
 $(BUILD)/%.cpp.o: %.cpp
@@ -56,7 +57,7 @@ $(BUILD)/%.cpp.o: %.cpp
 # c++ source
 $(BUILD)/%.c.o: %.c
 	mkdir -p $(dir $@)
-	$(CC) -c -fPIC $< -o $@ $(INCS) $(LIBS) $(CFLAGS)
+	$(CC) -c $< -o $@ $(INCS) $(LIBS) $(CFLAGS)
 
 # Header files for library
 $(BUILD)/inc/%.h: %.h
@@ -73,6 +74,10 @@ run:
 .PHONY: leak
 leak:
 	valgrind --leak-check=full --track-origins=yes $(BUILD)/$(TARGET)
+
+.PHONY: log
+log:
+	bat ./build/$(TARGET).log
 
 .PHONY: gdb
 gdb:

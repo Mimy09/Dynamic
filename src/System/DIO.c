@@ -33,9 +33,12 @@ void DIO_seek_end(DIO* in_io, uint32_t in_pos) {
 }
 uint32_t DIO_file_size(DIO* in_io) {
     fseek(in_io->_fp, 0, SEEK_END);
-    uint32_t pos = ftell(in_io->_fp);
+    long pos = ftell(in_io->_fp);
     fseek(in_io->_fp, 0, SEEK_SET);
     return pos;
+}
+uint32_t DIO_pos(DIO* in_io) {
+    return ftell(in_io->_fp);
 }
 
 // -- READ -- //
@@ -49,6 +52,13 @@ char* DIO_read_cstr(DIO* in_io) {
     while ((p = getc(in_io->_fp)) != EOF) {
         _p[i] = p; i++; if (p == '\0') break;
     }
+    return _p;
+}
+char* DIO_read_file(DIO* in_io) {
+    uint32_t file_size = DIO_file_size(in_io);
+    char* _p = (char*)DMalloc(file_size + 1);
+    memset(_p, 0, file_size);
+    fread(_p, sizeof(char), file_size, in_io->_fp);
     return _p;
 }
 DArray* DIO_read_DArray(DIO* in_io) {

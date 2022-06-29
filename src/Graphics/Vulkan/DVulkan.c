@@ -1,4 +1,5 @@
 #include "DVulkan.internal.h"
+#if defined(DYNAMIC_GRAPHICS)
 #include "../../Core/DMemory.h"
 #include "../../Core/DLog.h"
 #include <string.h>
@@ -372,3 +373,4 @@ void DVulkan_hook_update(DVulkan* in_vk, void(*in_f)(void*)) {
 void DVulkan_hook_draw(DVulkan* in_vk, void(*in_f)(void*)) {
 	in_vk->_draw = in_f;
 }
+#endif

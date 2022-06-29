@@ -17,16 +17,14 @@ bool    g_DMemory_logging   = false;
 
 #define DYNAMIC_MEMORY_LOG(type, ptr, size, color)\
     if (g_DMemory_logging) {\
-		printf (color type COL_BOLDWHITE " = %p" COL_RESET "[%u]\n" COL_RESET, ptr, size);\
+		DPrint (color type COL_RESET " = %p : %d\n" COL_RESET, ptr, size);\
 	} 
 
 void DMemory_begin(bool in_logging) {
     DPrint_dbg("DMemory begin...");
     DYNAMIC_UNSAFE_START
     g_DMemory  		= DArray_create(sizeof(uint64_t));
-    g_DMemory_trace = DArray_create(sizeof(DStr*));
 	DArray_buffer(g_DMemory, 10);
-	DArray_buffer(g_DMemory_trace, 10);
     g_DMemory_logging = in_logging;
 	DYNAMIC_UNSAFE_END
 }
@@ -37,29 +35,25 @@ void DMemory_end() {
     if (allocated > 0) {
         DPrint_wrn("DMemory_end...");
         for (int i = 0; i < allocated; i++) {
-            printf("\t0x%lx -> %s\n", *DArray_get_u64(g_DMemory, i), DStr_cstr(*(DStr**)DArray_get(g_DMemory_trace, i)));
+            printf("\t0x%lx\n", *DArray_get_u64(g_DMemory, i));
         }
     } else {
         DPrint_dbg("DMemory end...");
     }
     DArray_free(g_DMemory);
-	for (int i = 0; i < DArray_size(g_DMemory_trace); i++)
-		DStr_free(*(DStr**)DArray_get(g_DMemory_trace, i));
-    DArray_free(g_DMemory_trace);
 	DYNAMIC_UNSAFE_END
 }
 
 void DMemory_logging(bool in_logging) {
 	g_DMemory_logging = in_logging;
 }
-
+bool  DMemory_is_logging() {
+    return g_DMemory_logging;
+}
 void DMemory_add(void* in_ptr) {
     if (g_DMemory == NULL) return;
 	uint64_t ptr = (uint64_t)in_ptr;
     DArray_pushback_u64(g_DMemory, ptr);
-	DStr* buff = DStr_create(NULL);
-	DPrint_get_trace(buff, true);
-    DArray_pushback(g_DMemory_trace, &buff);
 }
 void DMemory_free(void* in_ptr) {
     if (g_DMemory == NULL) return;
@@ -67,8 +61,6 @@ void DMemory_free(void* in_ptr) {
     for (int i = 0; i < DArray_size(g_DMemory); i++) {
         if (*DArray_get_u64(g_DMemory, i) == ptr) {
             DArray_remove_at(g_DMemory, i);
-			DStr_free(*(DStr**)DArray_get(g_DMemory_trace, i));
-			DArray_remove_at(g_DMemory_trace, i);
 			break;
         }
     }
@@ -112,22 +104,6 @@ void* DRealloc (void* in_ptr, uint32_t in_size) {
     DYNAMIC_UNSAFE_END
     return ptr;
 }
-void* DReallocArr (void* in_ptr, uint32_t in_nmemb, uint32_t in_size) {
-    DYNAMIC_UNSAFE { return reallocarray(in_ptr, in_nmemb, in_size); }
-    DYNAMIC_UNSAFE_START
-
-    DMemory_free(in_ptr);
-	if (errno == ENOMEM) {
-		DPrint_err("DCalloc: reallocarr size overflowed");
-		return NULL;
-	}
-    void* ptr = reallocarray(in_ptr, in_nmemb, in_size);
-    DYNAMIC_MEMORY_LOG("reallocarr", ptr, in_size, COL_MAGENTA);
-    DMemory_add(ptr);
-
-    DYNAMIC_UNSAFE_END
-    return ptr;
-}
 void DFree (void* in_ptr) {
     DYNAMIC_UNSAFE { free(in_ptr); return; }
     DYNAMIC_UNSAFE_START
@@ -141,7 +117,7 @@ void DFree (void* in_ptr) {
 
 void DMemory_print() {
 	for (int i = 0; i < DArray_size(g_DMemory); i++) {
-		printf("\t0x%lx -> %s\n", *DArray_get_u64(g_DMemory, i), DStr_cstr(*(DStr**)DArray_get(g_DMemory_trace, i)));
+		printf("\t0x%lx\n", *DArray_get_u64(g_DMemory, i));
 	}
 }
 #endif

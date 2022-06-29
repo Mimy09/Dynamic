@@ -16,12 +16,14 @@ void DIO_seek(DIO* in_io, uint32_t in_pos);
 void DIO_seek_begin(DIO* in_io, uint32_t in_pos);
 void DIO_seek_end(DIO* in_io, uint32_t in_pos);
 uint32_t DIO_file_size(DIO* in_io);
+uint32_t DIO_pos(DIO* in_io);
 
 
 // -- Read -- //
 
 void* DIO_read(DIO* in_io, uint32_t in_size);
 char* DIO_read_cstr(DIO* in_io);
+char* DIO_read_file(DIO* in_io);
 DArray* DIO_read_DArray(DIO* in_io);
 DStr* DIO_read_DStr(DIO* in_io);
 

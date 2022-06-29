@@ -1,4 +1,5 @@
 #pragma once
+#if defined(DYNAMIC_GRAPHICS)
 #include <stdint.h>
 
 typedef struct DVulkan DVulkan;
@@ -10,3 +11,4 @@ void DVulkan_update(DVulkan* in_vk);
 
 void DVulkan_hook_update(DVulkan* in_vk, void(*in_f)(void*));
 void DVulkan_hook_draw(DVulkan* in_vk, void(*in_f)(void*));
+#endif

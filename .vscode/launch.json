@@ -9,12 +9,12 @@
         ""
       ],
       "stopAtEntry": false,
-      "cwd": "/home/mitch/Programming/C++/Dynamic/src",
+      "cwd": "/e/Programming/CC++/Dynamic/src",
       "environment": [],
-      "program": "/home/mitch/Programming/C++/Dynamic/src/build/dynamic",
+      "program": "/e/Programming/CC++/Dynamic/src/build/dynamic.exe",
       "internalConsoleOptions": "openOnSessionStart",
       "MIMode": "gdb",
-      "miDebuggerPath": "/usr/bin/gdb",
+      "miDebuggerPath": "/mingw64/bin/gdb.exe",
       "externalConsole": false,
       "setupCommands": [
         {

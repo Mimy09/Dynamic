@@ -33,14 +33,9 @@
     DPRINT_ERR_FLAG
 
 typedef unsigned char DPrint_flag;
-typedef struct {
-    const char*     _file;
-    const char*     _func;
-    const u_int32_t _line;
-} DTrace;
-
 extern DPrint_flag g_DPrint_level;
 
+// Set the level of logging
 void DPrint_set_level(DPrint_flag in_flag);
 
 // Prints using normal formatting
@@ -49,24 +44,19 @@ int32_t DPrint(const char* in_format, ...);
 // Prints with stack trace
 int32_t DPrint_t(const char* in_format, ...);
 
-int32_t _DPrint_inf_(DTrace in_trace, const char* in_format, ...);
-int32_t _DPrint_dbg_(DTrace in_trace, const char* in_format, ...);
-int32_t _DPrint_wrn_(DTrace in_trace, const char* in_format, ...);
-int32_t _DPrint_err_(DTrace in_trace, const char* in_format, ...);
-
 #define DPrint_inf(...) \
-if ((g_DPrint_level & DPRINT_INF_FLAG) != 0) { DTrace t = { ._file = __FILE__, ._func = __FUNCTION__, ._line = __LINE__ }; _DPrint_inf_(t, __VA_ARGS__); }
+if ((g_DPrint_level & DPRINT_INF_FLAG) != 0) { DPrint(COL_CYAN "Inf;" COL_WHITE " %s:%d: " COL_RESET, __FILE__, __LINE__); DPrint(__VA_ARGS__); DPrint("\n"); }
 #define DPrint_dbg(...) \
-if ((g_DPrint_level & DPRINT_DBG_FLAG) != 0) { DTrace t = { ._file = __FILE__, ._func = __FUNCTION__, ._line = __LINE__ }; _DPrint_dbg_(t, __VA_ARGS__); }
+if ((g_DPrint_level & DPRINT_DBG_FLAG) != 0) { DPrint(COL_GREEN "Dbg;" COL_WHITE " %s:%d: " COL_RESET, __FILE__, __LINE__); DPrint(__VA_ARGS__); DPrint("\n"); }
 #define DPrint_wrn(...) \
-if ((g_DPrint_level & DPRINT_WRN_FLAG) != 0) { DTrace t = { ._file = __FILE__, ._func = __FUNCTION__, ._line = __LINE__ }; _DPrint_wrn_(t, __VA_ARGS__); }
+if ((g_DPrint_level & DPRINT_WRN_FLAG) != 0) { DPrint(COL_YELLOW "Wrn;" COL_WHITE " %s:%d: " COL_RESET, __FILE__, __LINE__); DPrint(__VA_ARGS__); DPrint("\n"); }
 #define DPrint_err(...) \
-if ((g_DPrint_level & DPRINT_ERR_FLAG) != 0) { DTrace t = { ._file = __FILE__, ._func = __FUNCTION__, ._line = __LINE__ }; _DPrint_err_(t, __VA_ARGS__); }
+if ((g_DPrint_level & DPRINT_ERR_FLAG) != 0) { DPrint(COL_RED "Err;" COL_WHITE " %s:%d: " COL_RESET, __FILE__, __LINE__); DPrint(__VA_ARGS__); DPrint("\n"); }
 
+// Print out a new line char
 void DPrint_nl();
 
-void DPrint_get_trace(DStr* io_str, bool in_color);
-
+// Get the current time
 uint64_t DPrint_get_time();
 
 #endif

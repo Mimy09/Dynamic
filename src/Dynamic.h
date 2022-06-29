@@ -19,9 +19,7 @@ extern "C" {
 
 // Graphics
 #include "Graphics/Vulkan/DVulkan.h"
-
-// Networking
-#include "Networking/DNet.h"
+#include "Graphics/OpenGL/DOpenGL.h"
 
 // System
 #include "System/DIO.h"

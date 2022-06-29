@@ -1,5 +1,5 @@
 {
-  "makefile.extensionOutputFolder": "./.vscode/make",
+  "makefile.extensionOutputFolder": "./.vscode",
   "makefile.launchConfigurations": [
     {
       "cwd": "/home/mitch/Programming/C++/Dynamic/build",
@@ -19,6 +19,8 @@
     "dqueue.internal.h": "c",
     "random": "c",
     "numbers": "c",
-    "glfw3.h": "c"
+    "glfw3.h": "c",
+    "compare": "c",
+    "type_traits": "c"
   }
 }

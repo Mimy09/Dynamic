@@ -1,4 +1,5 @@
 #pragma once
+#if defined(DYNAMIC_GRAPHICS)
 #include "DVulkan.h"
 #include <vulkan/vulkan.h>
 #define GLFW_INCLUDE_VULKAN
@@ -40,3 +41,4 @@ struct DVulkan {
 	void(*_create)(void*);
 	void(*_free)(void*);
 };
+#endif
