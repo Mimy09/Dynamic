@@ -17,7 +17,7 @@ bool    g_DMemory_logging   = false;
 
 #define DYNAMIC_MEMORY_LOG(type, ptr, size, color)\
     if (g_DMemory_logging) {\
-		DPrint (color type COL_RESET " = %p : %d\n" COL_RESET, ptr, size);\
+		DPrint (color type COL_NRM " = %p : %d\n" COL_NRM, ptr, size);\
 	} 
 
 void DMemory_begin(bool in_logging) {
@@ -71,7 +71,7 @@ void* DMalloc (uint32_t in_size) {
     DYNAMIC_UNSAFE_START
 
     void* ptr = malloc(in_size);
-    DYNAMIC_MEMORY_LOG("malloc    ", ptr, in_size, COL_GREEN);
+    DYNAMIC_MEMORY_LOG("malloc    ", ptr, in_size, COL_GRN);
     DMemory_add(ptr);
 
     DYNAMIC_UNSAFE_END
@@ -86,7 +86,7 @@ void* DCalloc (uint32_t in_nmemb, uint32_t in_size) {
 		DPrint_err("DCalloc: Alloc size overflowed");
 		return NULL;
 	}
-    DYNAMIC_MEMORY_LOG("calloc    ", ptr, in_size, COL_GREEN);
+    DYNAMIC_MEMORY_LOG("calloc    ", ptr, in_size, COL_GRN);
     DMemory_add(ptr);
 
     DYNAMIC_UNSAFE_END
@@ -98,7 +98,7 @@ void* DRealloc (void* in_ptr, uint32_t in_size) {
 
     DMemory_free(in_ptr);
     void* ptr = realloc(in_ptr, in_size);
-    DYNAMIC_MEMORY_LOG("realloc   ", ptr, in_size, COL_MAGENTA);
+    DYNAMIC_MEMORY_LOG("realloc   ", ptr, in_size, COL_MAG);
     DMemory_add(ptr);
 
     DYNAMIC_UNSAFE_END

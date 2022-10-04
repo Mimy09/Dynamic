@@ -25,12 +25,12 @@ DArray* check_VkExtensionProperties(DArray* in_extensions) {
 		uint32_t j = 0;
 		for (; j < DArray_size(avaliable); j++) {
 			if (strcmp(*DArray_get_cstr(in_extensions, i), ((VkExtensionProperties*)DArray_get(avaliable, j))->extensionName) == 0) {
-				DPrint_dbg(COL_GREEN "%s" COL_RESET, *DArray_get_cstr(in_extensions, i));
+				DPrint_dbg(COL_GRN "%s" COL_NRM, *DArray_get_cstr(in_extensions, i));
 				break;
 			}
 		}
 		if (j == DArray_size(avaliable)) {
-			DPrint_dbg(COL_RED "%s" COL_RESET, *DArray_get_cstr(in_extensions, i));
+			DPrint_dbg(COL_RED "%s" COL_NRM, *DArray_get_cstr(in_extensions, i));
 			DArray_remove_at(in_extensions, i);
 			i--;
 		}
@@ -63,12 +63,12 @@ DArray* check_VkLayerProperties(DArray* in_validation) {
 		uint32_t j = 0;
 		for (; j < DArray_size(avaliable); j++) {
 			if (strcmp(*DArray_get_cstr(in_validation, i), ((VkLayerProperties*)DArray_get(avaliable, j))->layerName) == 0) {
-				DPrint_dbg(COL_GREEN "%s" COL_RESET, *DArray_get_cstr(in_validation, i));
+				DPrint_dbg(COL_GRN "%s" COL_NRM, *DArray_get_cstr(in_validation, i));
 				break;
 			}
 		}
 		if (j == DArray_size(avaliable)) {
-			DPrint_dbg(COL_RED "%s" COL_RESET, *DArray_get_cstr(in_validation, i));
+			DPrint_dbg(COL_RED "%s" COL_NRM, *DArray_get_cstr(in_validation, i));
 			DArray_remove_at(in_validation, i);
 		}
 	}
@@ -100,12 +100,12 @@ DArray* check_VkDeviceExtension(VkPhysicalDevice in_device, DArray* in_extension
 		uint32_t j = 0;
 		for (; j < DArray_size(avaliable); j++) {
 			if (strcmp(*DArray_get_cstr(in_extensions, i), ((VkExtensionProperties*)DArray_get(avaliable, j))->extensionName) == 0) {
-				DPrint_dbg(COL_GREEN "%s" COL_RESET, *DArray_get_cstr(in_extensions, i));
+				DPrint_dbg(COL_GRN "%s" COL_NRM, *DArray_get_cstr(in_extensions, i));
 				break;
 			}
 		}
 		if (j == DArray_size(avaliable)) {
-			DPrint_dbg(COL_RED "%s" COL_RESET, *DArray_get_cstr(in_extensions, i));
+			DPrint_dbg(COL_RED "%s" COL_NRM, *DArray_get_cstr(in_extensions, i));
 			DArray_remove_at(in_extensions, i);
 			i--;
 		}
@@ -170,8 +170,8 @@ bool    check_VkPhysicalDevices(VkPhysicalDevice in_device) {
 	vkGetPhysicalDeviceFeatures(in_device, &deviceFeatures);
 
 	bool suitable = deviceProperties.deviceType == VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU && deviceFeatures.geometryShader;
-	if (suitable) { DPrint_dbg(COL_GREEN "%s" COL_RESET, deviceProperties.deviceName); }
-	else { DPrint_dbg(COL_RED "%s" COL_RESET, deviceProperties.deviceName); }
+	if (suitable) { DPrint_dbg(COL_GRN "%s" COL_NRM, deviceProperties.deviceName); }
+	else { DPrint_dbg(COL_RED "%s" COL_NRM, deviceProperties.deviceName); }
 
 	return suitable;
 }

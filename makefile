@@ -1,13 +1,16 @@
 ##########################################
 ## GLOBAL
 
-# MAKEFLAGS += --silent
+MAKEFLAGS += --silent
 TARGET 	:= dynamic
 CC		:= /usr/bin/gcc
+#CC 		:= /usr/bin/x86_64-w64-mingw32-gcc
 
 # Flags
 INCS	?= -I./src/ -I/usr/include/
 INCS	+= -L/usr/lib/
+#INCS 	?= -I./src -I/usr/x86_64-w64-mingw32/include/
+#INCS	+= -L/usr/x86_64-w64-mingw32/lib/
 LIBS	?= -lpthread -lm
 MKF_DIR	:= $(abspath $(lastword $(MAKEFILE_LIST)))
 CUR_DIR	:= $(MKF_DIR:makefile=)
@@ -31,6 +34,11 @@ all-dbg: CFLAGS += -DDEBUG -g
 all-dbg: $(BUILD)/$(TARGET)-dbg
 all-rel: $(BUILD)/$(TARGET)-rel
 
+win-dbg: CC   = /usr/bin/x86_64-w64-mingw32-gcc
+win-dbg: INCS = -I./src -I/usr/x86_64-w64-mingw32/include/ -L/usr/x86_64-w64-mingw32/lib/
+win-dbg:
+	$(MAKE) clean; $(MAKE) -j$(CPU_COUNT) $(BUILD)/$(TARGET)-dbg
+
 rel:
 	$(MAKE) clean; $(MAKE) -j$(CPU_COUNT) all-rel > $(TARGET).log; mv $(TARGET).log ./build/; $(MAKE) run
 dbg:
@@ -42,12 +50,12 @@ lib: $(OBJS) $(HEAD)
 
 # debug excecutiable
 $(BUILD)/$(TARGET)-dbg: $(OBJS)
-	$(CC) $(CFLAGS) $(OBJS) -o $(BUILD)/$(TARGET).exe $(INCS) $(LIBS) $(LDFLAGS)
+	$(CC) $(CFLAGS) $(OBJS) -o $(BUILD)/$(TARGET) $(INCS) $(LIBS) $(LDFLAGS)
 
 # release excecutiable
 $(BUILD)/$(TARGET)-rel: $(OBJS)
-	$(CC) $(CFLAGS) $(OBJS) -o $(BUILD)/$(TARGET).exe $(INCS) $(LIBS) $(LDFLAGS)
-	strip $(BUILD)/$(TARGET).exe
+	$(CC) $(CFLAGS) $(OBJS) -o $(BUILD)/$(TARGET) $(INCS) $(LIBS) $(LDFLAGS)
+	strip $(BUILD)/$(TARGET)
 
 # c++ source
 $(BUILD)/%.cpp.o: %.cpp

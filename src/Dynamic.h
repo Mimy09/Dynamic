@@ -4,6 +4,11 @@
 extern "C" {
 #endif
 
+// Core
+#include "Core/DLog.h"
+#include "Core/SafePtr.h"
+#include "Core/DMemory.h"
+
 // Container
 #include "Container/DArray.h"
 #include "Container/DBits.h"
@@ -12,10 +17,6 @@ extern "C" {
 #include "Container/DMap.h"
 #include "Container/DQueue.h"
 #include "Container/DStr.h"
-
-// Core
-#include "Core/DLog.h"
-#include "Core/DMemory.h"
 
 // Graphics
 #include "Graphics/Vulkan/DVulkan.h"

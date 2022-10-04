@@ -1,4 +1,2 @@
-nvcc
+gcc
 -I./src/
--I/opt/cuda/include/
--arch=sm_80

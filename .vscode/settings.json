@@ -21,6 +21,9 @@
     "numbers": "c",
     "glfw3.h": "c",
     "compare": "c",
-    "type_traits": "c"
+    "type_traits": "c",
+    "darray.h": "c",
+    "initializer_list": "c",
+    "stdio.h": "c"
   }
 }
